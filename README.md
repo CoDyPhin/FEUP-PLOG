@@ -4,8 +4,8 @@
 
 | Name             | Number    | E-Mail                |
 | ---------------- | --------- | --------------------- |
-| Carlos Lousada    | 201806302 | uplyr201806302@fe.up.pt  |
-| José David Rocha    | 201806371 | uplyr201806371@fe.up.pt  |
+|   Carlos Lousada  | 201806302 | up201806302@fe.up.pt  |
+|  José David Rocha   | 201806371 | up201806371@fe.up.pt  |
 
 ## Gekitai
 
@@ -20,7 +20,7 @@ The first player to either line up three of their markers in a row at the end of
 
 - Material:
     - A 6×6 board;
-    - 16 markers (8 of each color).
+    - 16 markers (8 of each color, or, in this case, 'X's and an 'O's).
 
 [Source](https://boardgamegeek.com/boardgame/295449/gekitai)
 
