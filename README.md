@@ -11,12 +11,12 @@
 
 - Game description:
 
-Gekitai (Repel or Push Away) is a 2-person abstract strategy game.
-Each player has eight colored markers and takes turns placing them anywhere on any open space on the board.
-When placed, a marker pushes all adjacent pieces outwards one space if there is an open space for it to move to (or off the board).
-Markers shoved off the board are returned to the player.
-If there is not an open space on the opposite side of the pushed marker, it does not push
-The first player to either line up three of their markers in a row at the end of their turn (after pushing) OR have all eight of their markers on the board (also after pushing), is declared the winner.
+    Gekitai (Repel or Push Away) is a 2-person abstract strategy game.
+    Each player has eight colored markers and takes turns placing them anywhere on any open space on the board.
+    When placed, a marker pushes all adjacent pieces outwards one space if there is an open space for it to move to (or off the board).
+    Markers shoved off the board are returned to the player.
+    If there is not an open space on the opposite side of the pushed marker, it does not push
+    The first player to either line up three of their markers in a row at the end of their turn (after pushing) OR have all eight of their markers on the board (also after pushing), is declared the winner.
 
 - Material:
     - A 6×6 board;
