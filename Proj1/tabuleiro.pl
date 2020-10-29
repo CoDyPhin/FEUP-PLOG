@@ -1,46 +1,37 @@
 initialBoard([
-[empty,empty,empty,empty,empty,empty],
-[empty,empty,empty,empty,empty,empty],
-[empty,empty,empty,empty,empty,empty],
-[empty,empty,empty,empty,empty,empty],
-[empty,empty,empty,empty,empty,empty],
-[empty,empty,empty,empty,empty,empty]
-]).
-
+    [p2,p1,empty,empty,empty,empty],
+    [empty,empty,empty,empty,empty,empty],
+    [empty,empty,empty,empty,empty,empty],
+    [empty,empty,empty,empty,empty,empty],
+    [empty,empty,empty,empty,empty,empty],
+    [empty,empty,empty,empty,empty,empty]
+    ]).
+ 
 symbol(empty,S) :- S='.'.
-symbol(black,S) :- S='X'.
-symbol(white,S) :- S='O'.
-symbol(red,S) :- S='*'.
+symbol(p1,S) :- S='X'.
+symbol(p2,S) :- S='O'.
+symbol(_S,S) :- S='S'.
 
-letter(1, L) :- L='A'.
-letter(2, L) :- L='B'.
-letter(3, L) :- L='C'.
-letter(4, L) :- L='D'.
-letter(5, L) :- L='E'.
-letter(6, L) :- L='F'.
-
-printBoard(X) :-
+printBoard(X):-
     nl,
-    write('   | 1 | 2 | 3 | 4 | 5 | 6 |\n'),
+    write('   | A | B | C | D | E | F |\n'),
     write('---|---|---|---|---|---|---|\n'),
-    printMatrix(X, 1).
+    printMatrix(X,0).
 
-printMatrix([], 12).
+printMatrix([],6).
 
-printMatrix([Head|Tail], N) :-
-    letter(N, L),
+printMatrix([H|T],X):-
     write(' '),
-    write(L),
+    X1 is X+1,
+    write(X1),
     write(' | '),
-    N1 is N + 1,
-    printLine(Head),
+    printLine(H),
     write('\n---|---|---|---|---|---|---|\n'),
-    printMatrix(Tail, N1).
+    printMatrix(T, X1).
 
 printLine([]).
-
-printLine([Head|Tail]) :-
-    symbol(Head, S),
+printLine([H|T]):-
+    symbol(H,S),
     write(S),
     write(' | '),
-    printLine(Tail).
+    printLine(T).

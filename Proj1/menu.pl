@@ -1,2 +1,0 @@
-mainMenu :-
-    startGame('P', 'P').
