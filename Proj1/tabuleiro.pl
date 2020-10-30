@@ -1,5 +1,5 @@
 initialBoard([
-    [p2,p1,empty,empty,empty,empty],
+    [empty,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty],
@@ -7,9 +7,9 @@ initialBoard([
     [empty,empty,empty,empty,empty,empty]
     ]).
  
-symbol(empty,S) :- S='.'.
-symbol(p1,S) :- S='X'.
-symbol(p2,S) :- S='O'.
+symbol(empty,S) :- S=' '.
+symbol(plyr1,S) :- S='X'.
+symbol(plyr2,S) :- S='O'.
 symbol(_S,S) :- S='S'.
 
 printBoard(X):-

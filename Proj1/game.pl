@@ -1,24 +1,91 @@
-play :-
-    initialBoard(Board),
-    printBoard(Board),
-    startLoop(Board).
+:-dynamic(state/2).
 
-startLoop(Board):-
-    p1Turn(Board, NewBoard),
-    startLoop(NewBoard).
+start :-
+    initial(GameState),
+    displayInitialBoard(GameState),
+    gameLoop('Player1','Player2').
 
-p1Turn(Board, NewBoard):-
-    readRow(R1),
-    readColumn(C1),
-    RowIndex is R1 - 1,
-    ColumnIndex is C1 - 1,
-    replaceInMatrix(Board, RowIndex, ColumnIndex, p1, NewBoard),
-    printBoard(NewBoard).
+initial(GameState) :-
+    initialBoard(GameState).
 
-p2Turn(Board, NewBoard):-
-    readRow(R2),
-    readColumn(C2),
-    RowIndex2 is R2 - 1,
-    ColumnIndex2 is C2 - 1,
-    replaceInMatrix(Board, RowIndex2, ColumnIndex2, p2, NewBoard),
-    printBoard(NewBoard).
+displayInitialBoard(GameState):-
+    printBoard(GameState).
+
+repeat.
+repeat:-repeat.
+
+gameLoop(Player1,Player2) :-
+    initial(InitialBoard),
+    assert(move(1,Player1)),
+    assert(move(2,Player2)),
+    assert(state(1,InitialBoard)),
+    repeat,
+        retract(state(Player,Board)),
+        once(playMove(Player,NextPlayer,Board,UpdatedBoard)),
+        assert(state(NextPlayer,UpdatedBoard)),
+        fail.
+    /*endGame.
+    
+endGame:-
+    state(Player, Board),
+    write('3 in a row!\n'),
+    write('Player '),
+    write(Player),
+    write(' wins the game!').*/
+
+
+playMove(Player, NextPlayer, Board, NewBoard):-
+    write('Player '), write(Player), write(' move:\n'),
+    readRow(R1, Row1),
+    readColumn(C1, Col1),
+    RowIndex is Row1 - 1,
+    ColumnIndex is Col1 - 1,
+    (   Player =:= 1 -> 
+        replaceInMatrix(Board, RowIndex, ColumnIndex, plyr1, NewBoard)
+    ;   Player =:= 2 ->
+        replaceInMatrix(Board, RowIndex, ColumnIndex, plyr2, NewBoard)
+    ),
+    printBoard(NewBoard),
+    (
+		(Player =:= 1 ->
+		    NextPlayer is 2
+		);
+
+		(Player =:= 2 ->
+			NextPlayer is 1
+		)
+	),
+    checkVictory(Player, NewBoard).
+
+check3RowAux(MatValue, [], 7).
+check3RowAux(MatValue, [Head|Tail], N):-
+    N1 is N+1,
+    check3Row(MatValue, Head, 0),
+    check3RowAux(MatValue, Tail, N1).
+
+check3Row(MatValue, [], Found).
+check3Row(MatValue, [Head|Tail], Found):-
+    (
+        Found =:= 3 -> write('3 in a row found!\n')
+        ;
+        true
+    ),
+    symbol(MatValue, S1),
+    symbol(Head, S2),
+    (
+        S1 = S2 ->
+            check3Row(MatValue, Tail, Found+1)
+        ;
+            check3Row(MatValue, Tail, 0)
+        
+    ).
+
+checkVictory(Player, Board):-
+    (
+        (Player =:= 1 ->
+            check3RowAux(plyr1, Board, 1)
+        );
+        (Player =:= 2 ->
+            check3RowAux(plyr2, Board, 1)
+        )
+    ).

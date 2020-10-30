@@ -1,4 +1,4 @@
-readRow(R1):-
+readRow(R1, NewRow):-
     write('Row:\n'),
     read(R1),
     checkRow(R1, NewRow).
@@ -22,31 +22,49 @@ checkRow(6, NewRow) :-
     NewRow = 6.
 
 checkRow(_Row, NewRow) :-
-    write('Invalid Rown!\nSelect again:\n'),
+    write('Invalid Row!\nSelect again:\n'),
     readRow(NewRow).
 
 
-readColumn(C1):-
+readColumn(C1, NewCol):-
     write('Column:\n'),
     read(C1),
     checkColumn(C1, NewCol).
 
-checkColumn(1, NewCol) :-
+checkColumn('A', NewCol) :-
     NewCol = 1.
 
-checkColumn(2, NewCol) :-
+checkColumn('B', NewCol) :-
     NewCol = 2.
 
-checkColumn(3, NewCol) :-
+checkColumn('C', NewCol) :-
     NewCol = 3.
 
-checkColumn(4, NewCol) :-
+checkColumn('D', NewCol) :-
     NewCol = 4.
 
-checkColumn(5, NewCol) :-
+checkColumn('E', NewCol) :-
     NewCol = 5.
 
-checkColumn(6, NewCol) :-
+checkColumn('F', NewCol) :-
+    NewCol = 6.
+
+checkColumn(a, NewCol) :-
+    NewCol = 1.
+
+checkColumn(b, NewCol) :-
+    NewCol = 2.
+
+checkColumn(c, NewCol) :-
+    NewCol = 3.
+
+checkColumn(d, NewCol) :-
+    NewCol = 4.
+
+checkColumn(e, NewCol) :-
+    NewCol = 5.
+
+checkColumn(f, NewCol) :-
     NewCol = 6.
 
 checkColumn(_Column, NewColumn) :-
