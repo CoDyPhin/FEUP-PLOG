@@ -125,6 +125,14 @@
 
 ​	Furthermore, we used "X" and "O" to represent, respectively, Player 1 and Player 2. Empty values are represented by an empty space (" "). With the use of the predicate symbol(Value, S) we were able to display X, O and " " instead of values initially declared on the board's matrix (plyr1, plyr2, empty) which would result in a less user-friendly and easy-to-read game.
 
-- Inital Situation:
+- Inital State:
 
-  ![Initial state](./img/initialstate.png)
+  ![Initial state](img/initialstate.png)
+  
+  - Intermediate State:
+
+  ![Initial state](img/intermediatestate.png)
+  
+  - Final State:
+
+  ![Initial state](img/finalstate.png)
