@@ -2,14 +2,14 @@
 
 play :-
     initial(GameState),
-    displayInitialBoard(GameState),
+    displayInitialBoard(GameState, 1),
     gameLoop('Player1','Player2').
 
 initial(GameState) :-
     initialBoard(GameState).
 
-displayInitialBoard(GameState):-
-    display_game(GameState).
+displayInitialBoard(GameState, Player):-
+    display_game(GameState, Player).
 
 repeat.
 repeat:-repeat.
@@ -22,8 +22,8 @@ gameLoop(Player1,Player2) :-
     repeat,
         retract(state(Player,Board)),
         once(playMove(Player,NextPlayer,Board,UpdatedBoard)),
-        display_game(UpdatedBoard),
         assert(state(NextPlayer,UpdatedBoard)),
+        once(display_game(UpdatedBoard, NextPlayer)),
         fail.
     /*endGame.
     
