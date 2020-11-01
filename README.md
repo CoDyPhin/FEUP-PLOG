@@ -121,9 +121,9 @@
 
 ## Game State Visualization
 
-​	To display the board we used the predicates printBoard(X), printMatrix([], 6) and printLine([]). printBoard(X) prints a row of the board, by calling printMatrix([], 6)  on every iteration - printMatrix([], 6) will then make use of predicate printLine([]), which recursively calls itself, printing the Head of the given list in every iteration.
+To display the board we used the predicates printBoard(X), printMatrix([], 6) and printLine([]). printBoard(X) prints a row of the board, by calling printMatrix([], 6)  on every iteration - printMatrix([], 6) will then make use of predicate printLine([]), which recursively calls itself, printing the Head of the given list in every iteration.
 
-​	Furthermore, we used "X" and "O" to represent, respectively, Player 1 and Player 2. Empty values are represented by an empty space (" "). With the use of the predicate symbol(Value, S) we were able to display X, O and " " instead of values initially declared on the board's matrix (plyr1, plyr2, empty) which would result in a less user-friendly and easy-to-read game.
+Furthermore, we use "X" and "O" to represent, respectively, Player 1 and Player 2. Empty values are represented by an empty space (" "). With the use of the predicate symbol(Value, S) we were able to display X, O and " " instead of values initially declared on the board's matrix (plyr1, plyr2, empty) which would result in a less user-friendly and easy-to-read game.
 
 - Inital State:
 
