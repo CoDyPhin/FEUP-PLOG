@@ -1,6 +1,6 @@
 :-dynamic(state/2).
 
-start :-
+play :-
     initial(GameState),
     displayInitialBoard(GameState),
     gameLoop('Player1','Player2').
@@ -9,7 +9,7 @@ initial(GameState) :-
     initialBoard(GameState).
 
 displayInitialBoard(GameState):-
-    printBoard(GameState).
+    display_game(GameState).
 
 repeat.
 repeat:-repeat.
@@ -22,6 +22,7 @@ gameLoop(Player1,Player2) :-
     repeat,
         retract(state(Player,Board)),
         once(playMove(Player,NextPlayer,Board,UpdatedBoard)),
+        display_game(UpdatedBoard),
         assert(state(NextPlayer,UpdatedBoard)),
         fail.
     /*endGame.
@@ -35,7 +36,6 @@ endGame:-
 
 
 playMove(Player, NextPlayer, Board, NewBoard):-
-    write('Player '), write(Player), write(' move:\n'),
     readRow(R1, Row1),
     readColumn(C1, Col1),
     RowIndex is Row1 - 1,
@@ -45,7 +45,6 @@ playMove(Player, NextPlayer, Board, NewBoard):-
     ;   Player =:= 2 ->
         replaceInMatrix(Board, RowIndex, ColumnIndex, plyr2, NewBoard)
     ),
-    printBoard(NewBoard),
     (
 		(Player =:= 1 ->
 		    NextPlayer is 2

@@ -5,4 +5,4 @@
 :-use_module(library(lists)).
 
 gekitai :-
-    start.
+    play.
