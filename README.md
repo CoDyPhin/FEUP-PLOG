@@ -39,20 +39,23 @@
     [empty,empty,empty,empty,empty,empty],
     ]). 
 ```
-       | 0 | 1 | 2 | 3 | 4 | 5 |
+       | A | B | C | D | E | F |
     ---|---|---|---|---|---|---|
-     A |   |   |   |   |   |   | 
+     1 |   |   |   |   |   |   | 
     ---|---|---|---|---|---|---|
-     B |   |   |   |   |   |   | 
+     2 |   |   |   |   |   |   | 
     ---|---|---|---|---|---|---|
-     C |   |   |   |   |   |   | 
+     3 |   |   |   |   |   |   | 
     ---|---|---|---|---|---|---|
-     D |   |   |   |   |   |   | 
+     4 |   |   |   |   |   |   | 
     ---|---|---|---|---|---|---|
-     E |   |   |   |   |   |   | 
+     5 |   |   |   |   |   |   | 
     ---|---|---|---|---|---|---|
-     F |   |   |   |   |   |   | 
+     6 |   |   |   |   |   |   | 
     ---|---|---|---|---|---|---|
+    Player 1 Move:
+    Row:
+    |: 
 
 
 - Intermediate Situation:
@@ -66,22 +69,25 @@
     [empty,plyr2,empty,empty,empty,empty],  
     [empty,empty,empty,empty,plyr2,empty]  
     ]).
-```  
-   
-        | 1 | 2 | 3 | 4 | 5 | 6 |  
+```
+
+        | A | B | C | D | E | F |  
      ---|---|---|---|---|---|---|  
-      A |   |   | X |   | X |   |  
+      1 |   |   | X |   | X |   |  
      ---|---|---|---|---|---|---|  
-      B |   |   |   | O |   | X |  
+      2 |   |   |   | O |   | X |  
      ---|---|---|---|---|---|---|  
-      C | O |   |   | X |   |   |  
+      3 | O |   |   | X |   |   |  
      ---|---|---|---|---|---|---|  
-      D |   |   |   |   | O | X |  
+      4 |   |   |   |   | O | X |  
      ---|---|---|---|---|---|---|  
-      E |   | X | O |   |   |   |  
+      5 |   | X | O |   |   |   |  
      ---|---|---|---|---|---|---|  
-      F | O |   |   |   | O |   |  
+      6 | O |   |   |   | O |   |  
      ---|---|---|---|---|---|---|  
+     Player 1 Move:
+     Row:
+     |:
 
 
 - Final Situation:
@@ -95,19 +101,30 @@
     [plyr2,empty,plyr1,plyr1,empty,empty],  
     [empty,empty,empty,empty,empty,plyr2]  
     ]).
-``` 
+```
 
-        | 1 | 2 | 3 | 4 | 5 | 6 |  
+        | A | B | C | D | E | F |  
      ---|---|---|---|---|---|---|  
-      A | X |   |   | X |   |   |  
+      1 | X |   |   | X |   |   |  
      ---|---|---|---|---|---|---|  
-      B |   |   |   |   |   |   |  
+      2 |   |   |   |   |   |   |  
      ---|---|---|---|---|---|---|  
-      C |   | O | O | O | X |   |  
+      3 |   | O | O | O | X |   |  
      ---|---|---|---|---|---|---|  
-      D |   |   |   |   |   |   |  
+      4 |   |   |   |   |   |   |  
      ---|---|---|---|---|---|---|  
-      E | O |   | X | X |   |   |  
+      5 | O |   | X | X |   |   |  
      ---|---|---|---|---|---|---|  
-      F |   |   |   |   |   | O |  
+      6 |   |   |   |   |   | O |  
      ---|---|---|---|---|---|---|
+     3 in a row found!
+
+## Game State Visualization
+
+​	To display the board we used the predicates printBoard(X), printMatrix([], 6) and printLine([]). printBoard(X) prints a row of the board, by calling printMatrix([], 6)  on every iteration - printMatrix([], 6) will then make use of predicate printLine([]), which recursively calls itself, printing the Head of the given list in every iteration.
+
+​	Furthermore, we used "X" and "O" to represent, respectively, Player 1 and Player 2. Empty values are represented by an empty space (" "). With the use of the predicate symbol(Value, S) we were able to display X, O and " " instead of values initially declared on the board's matrix (plyr1, plyr2, empty) which would result in a less user-friendly and easy-to-read game.
+
+- Inital Situation:
+
+  ![Initial state](./img/initialstate.png)
