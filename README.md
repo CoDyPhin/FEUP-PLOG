@@ -127,12 +127,12 @@
 
 - Inital State:
 
-  ![Initial state](img/initialstate.png)
+  ![Initial state](Proj1/img/initialstate.png)
   
   - Intermediate State:
 
-  ![Initial state](img/intermediatestate.png)
+  ![Initial state](Proj1/img/intermediatestate.png)
   
   - Final State:
 
-  ![Initial state](img/finalstate.png)
+  ![Initial state](Proj1/img/finalstate.png)
