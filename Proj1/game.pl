@@ -80,6 +80,42 @@ check3Row(MatValue, [Head|Tail], Found):-
         
     ).
 
+check3DiagonalR(MatValue, Board, 4, 4, Found).
+
+check3DiagonalR(MatValue, Board, NRow, NCol, Found):-
+    (
+        NCol > 4 ->
+            Found is 0
+        ;
+            true
+    ),
+    (
+        NCol > 4 ->
+            NRow is NRow+1
+        ;
+            true
+    ),
+    (
+        NCol > 4 ->
+            NCol is 1
+        ;
+            true
+    ),
+    (
+        Found =:= 3 -> write('3 in a diagonal found!\n')
+        ;
+        true
+    ),
+    getValueFromMatrix(Board, NRow, NCol, Value),
+    symbol(Value, S1),
+    symbol(MatValue, S2),
+    (
+        S1 = S2 -> 
+            check3DiagonalR(MatValue, Board, NRow+1, NCol+1, Found+1)
+        ;
+            check3DiagonalR(MatValue, Board, NRow, NCol+1, 0)
+    ).
+
 checkVictory(Player, Board):-
     (
         (Player =:= 1 ->
@@ -88,4 +124,21 @@ checkVictory(Player, Board):-
         (Player =:= 2 ->
             check3RowAux(plyr2, Board, 1)
         )
+    ),
+    transposeMat(Board, TBoard),
+    (
+        (Player =:= 1 ->
+            check3RowAux(plyr1, TBoard, 1)
+        );
+        (Player =:= 2 ->
+            check3RowAux(plyr2, TBoard, 1)
+        )
     ).
+    /*(
+        (Player =:= 1 ->
+            check3DiagonalR(plyr1, Board, 1, 1, 0)
+        );
+        (Player =:= 2 ->
+            check3DiagonalR(plyr2, Board, 1, 1, 0)
+        )
+    ).*/
