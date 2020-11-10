@@ -1,4 +1,4 @@
-transposeMat([], []).
+/*transposeMat([], []).
 transposeMat([F|Fs], Ts) :-
     transposeMat(F, [F|Fs], Ts).
 
@@ -26,4 +26,8 @@ getValueFromMatrix([_H|T], Row, Column, Value) :-
         Row > 0,
         Row1 is Row - 1,
         getValueFromMatrix(T, Row1, Column, Value).
+*/
 
+getValueFromMatrix(Board, Row, Col, Value) :-
+    nth1(Row, Board, NewRow),
+    nth1(Col, NewRow, Value).

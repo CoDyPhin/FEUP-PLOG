@@ -23,7 +23,7 @@ checkRow(6, NewRow) :-
 
 checkRow(_Row, NewRow) :-
     write('Invalid Row!\nSelect again:\n'),
-    readRow(NewRow).
+    readRow(Input, NewRow).
 
 
 readColumn(C1, NewCol):-
@@ -69,7 +69,7 @@ checkColumn(f, NewCol) :-
 
 checkColumn(_Column, NewColumn) :-
     write('Invalid Column!\nSelect again:\n'),
-    readColumn(NewCol).
+    readColumn(Input ,NewCol).
 
 
 replaceInList([_H|T], 0, Value, [Value|T]).

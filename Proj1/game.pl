@@ -24,15 +24,12 @@ gameLoop(Player1,Player2) :-
         once(playMove(Player,NextPlayer,Board,UpdatedBoard)),
         assert(state(NextPlayer,UpdatedBoard)),
         once(display_game(UpdatedBoard, NextPlayer)),
-        fail.
-    /*endGame.
+        checkVictory(UpdatedBoard),
+    endGame.
     
 endGame:-
-    state(Player, Board),
-    write('3 in a row!\n'),
-    write('Player '),
-    write(Player),
-    write(' wins the game!').*/
+    winner(Player),
+    write('Player '), write(Player), write(' wins the game! 3 in a row found!\n').
 
 
 playMove(Player, NextPlayer, Board, NewBoard):-
@@ -53,91 +50,77 @@ playMove(Player, NextPlayer, Board, NewBoard):-
 		(Player =:= 2 ->
 			NextPlayer is 1
 		)
-	),
-    checkVictory(Player, NewBoard).
+	).
 
-check3RowAux(MatValue, [], 7).
-check3RowAux(MatValue, [Head|Tail], N):-
-    N1 is N+1,
-    check3Row(MatValue, Head, 0),
-    check3RowAux(MatValue, Tail, N1).
+threeInLDiag(0,_,_,_,_).
 
-check3Row(MatValue, [], Found).
-check3Row(MatValue, [Head|Tail], Found):-
-    (
-        Found =:= 3 -> write('3 in a row found!\n')
-        ;
-        true
-    ),
-    symbol(MatValue, S1),
-    symbol(Head, S2),
-    (
-        S1 = S2 ->
-            check3Row(MatValue, Tail, Found+1)
-        ;
-            check3Row(MatValue, Tail, 0)
-        
-    ).
+threeInLDiag(Counter,Row,Col,Board,Value):-
+    Row < 7,
+    Col < 7,
+    getValueFromMatrix(Board,Row,Col,Value),
+    NewRow is Row-1,
+    NewCol is Col-1,
+    NewCounter is Counter-1,
+    threeInLDiag(NewCounter,NewRow,NewCol,Board,Value),!.
 
-check3DiagonalR(MatValue, Board, 4, 4, Found).
+threeInRDiag(0,_,_,_,_).
 
-check3DiagonalR(MatValue, Board, NRow, NCol, Found):-
-    (
-        NCol > 4 ->
-            Found is 0
-        ;
-            true
-    ),
-    (
-        NCol > 4 ->
-            NRow is NRow+1
-        ;
-            true
-    ),
-    (
-        NCol > 4 ->
-            NCol is 1
-        ;
-            true
-    ),
-    (
-        Found =:= 3 -> write('3 in a diagonal found!\n')
-        ;
-        true
-    ),
-    getValueFromMatrix(Board, NRow, NCol, Value),
-    symbol(Value, S1),
-    symbol(MatValue, S2),
-    (
-        S1 = S2 -> 
-            check3DiagonalR(MatValue, Board, NRow+1, NCol+1, Found+1)
-        ;
-            check3DiagonalR(MatValue, Board, NRow, NCol+1, 0)
-    ).
+threeInRDiag(Counter,Row,Col,Board,Value):-
+    Row < 7,
+    Col < 7,
+    getValueFromMatrix(Board,Row,Col,Value),
+    NewRow is Row-1,
+    NewCol is Col+1,
+    NewCounter is Counter-1,
+    threeInRDiag(NewCounter,NewRow,NewCol,Board,Value),!.
 
-checkVictory(Player, Board):-
-    (
-        (Player =:= 1 ->
-            check3RowAux(plyr1, Board, 1)
-        );
-        (Player =:= 2 ->
-            check3RowAux(plyr2, Board, 1)
-        )
-    ),
-    transposeMat(Board, TBoard),
-    (
-        (Player =:= 1 ->
-            check3RowAux(plyr1, TBoard, 1)
-        );
-        (Player =:= 2 ->
-            check3RowAux(plyr2, TBoard, 1)
-        )
-    ).
-    /*(
-        (Player =:= 1 ->
-            check3DiagonalR(plyr1, Board, 1, 1, 0)
-        );
-        (Player =:= 2 ->
-            check3DiagonalR(plyr2, Board, 1, 1, 0)
-        )
-    ).*/
+threeInCol(0,_,_,_,_).
+
+threeInCol(Counter,Row,Col,Board,Value):-
+    Row < 7,
+    Col < 7,
+    getValueFromMatrix(Board,Row,Col,Value),
+    NewRow is Row-1,
+    NewCounter is Counter-1,
+    threeInCol(NewCounter,NewRow,Col,Board,Value),!.
+
+threeInRow(0,_,_,_,_).
+
+threeInRow(Counter,Row,Col,Board,Value):-
+    Row < 7,
+    Col < 7,
+    getValueFromMatrix(Board,Row,Col,Value),
+    NewCol is Col-1,
+    NewCounter is Counter-1,
+    threeInRow(NewCounter,Row,NewCol,Board,Value),!.
+
+
+checkAllAux(Row,Col,Board,Value):-
+    Row > 0,
+    Col > 0,
+    threeInRow(3,Row,Col,Board,Value);
+    threeInCol(3,Row,Col,Board,Value);
+    threeInRDiag(3,Row,Col,Board,Value);
+    threeInLDiag(3,Row,Col,Board,Value).
+
+checkAllAux(Row,Col,Board,Value):-
+    Row > 0,
+    Col > 0,
+    NextRow is Row-1,
+    checkAllAux(NextRow,Col,Board,Value).
+
+checkAllAux(Row,Col,Board,Value):-
+    Row > 0,
+    Col > 0,
+    NextCol is Col-1,
+    checkAllAux(Row,NextCol,Board,Value).
+
+checkAll(Board,Value):-
+    checkAllAux(7,7,Board,Value).
+
+checkVictory(Board):-
+    retract(winner(Player)),
+    assert(winner(1)),
+    checkAll(Board,plyr1);
+    assert(winner(2)),
+    checkAll(Board,plyr2).
