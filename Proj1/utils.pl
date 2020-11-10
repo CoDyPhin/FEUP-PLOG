@@ -28,6 +28,18 @@ getValueFromMatrix([_H|T], Row, Column, Value) :-
         getValueFromMatrix(T, Row1, Column, Value).
 */
 
+/*addPieceCounter:- bb_get(npieces, X), write('Counter: '), write(X), write('\t'), X2 is X+1, bb_put(npieces, X2).
+
+checkCounter:- bb_get(npieces, X), X =:= 8.*/
+
+flatten([], []) :- !.
+flatten([L|Ls], FlatL) :-
+    !,
+    flatten(L, NewL),
+    flatten(Ls, NewLs),
+    append(NewL, NewLs, FlatL).
+flatten(L, [L]).
+
 getValueFromMatrix(Board, Row, Col, Value) :-
     nth1(Row, Board, NewRow),
     nth1(Col, NewRow, Value).

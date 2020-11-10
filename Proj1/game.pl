@@ -29,7 +29,7 @@ gameLoop(Player1,Player2) :-
     
 endGame:-
     winner(Player),
-    write('Player '), write(Player), write(' wins the game! 3 in a row found!\n').
+    write('Player '), write(Player), write(' wins the game!\n').
 
 
 playMove(Player, NextPlayer, Board, NewBoard):-
@@ -84,6 +84,16 @@ threeInCol(Counter,Row,Col,Board,Value):-
     NewCounter is Counter-1,
     threeInCol(NewCounter,NewRow,Col,Board,Value),!.
 
+eightOnBoard(_,_,_,0).
+eightOnBoard(Board, Index, Value, Counter):-
+    Index < 37,
+    NewI is Index+1,
+    (
+        nth1(Index, Board, Value) -> NewC is Counter-1; NewC is Counter
+    ),
+    eightOnBoard(Board, NewI, Value, NewC),!.
+
+
 threeInRow(0,_,_,_,_).
 
 threeInRow(Counter,Row,Col,Board,Value):-
@@ -93,7 +103,6 @@ threeInRow(Counter,Row,Col,Board,Value):-
     NewCol is Col-1,
     NewCounter is Counter-1,
     threeInRow(NewCounter,Row,NewCol,Board,Value),!.
-
 
 checkAllAux(Row,Col,Board,Value):-
     Row > 0,
@@ -116,6 +125,8 @@ checkAllAux(Row,Col,Board,Value):-
     checkAllAux(Row,NextCol,Board,Value).
 
 checkAll(Board,Value):-
+    flatten(Board, FlatBoard),
+    eightOnBoard(FlatBoard, 1, Value, 8);
     checkAllAux(7,7,Board,Value).
 
 checkVictory(Board):-
