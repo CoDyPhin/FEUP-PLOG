@@ -40,7 +40,12 @@ playMove(Player, NextPlayer, Board, NewBoard):-
         replaceInMatrix(Board, RowIndex, ColumnIndex, plyr1, NewBoard)
     ;   Player =:= 2 ->
         replaceInMatrix(Board, RowIndex, ColumnIndex, plyr2, NewBoard)
-    ),
+    ),/*!,
+    (   Player =:= 1 -> 
+        repulsion(CRow, CCol, plyr1, Board, NewBoard)
+    ;   Player =:= 2 ->
+        repulsion(CRow, CCol, plyr2, Board, NewBoard)
+    ),*/
     (
 		(Player =:= 1 ->
 		    NextPlayer is 2
