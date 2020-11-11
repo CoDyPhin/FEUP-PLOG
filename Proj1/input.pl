@@ -1,3 +1,13 @@
+readInput(NewRow, NewCol, ConfirmedR, ConfirmedC, Board):-
+    readColumn(C1, NewCol),
+    readRow(R1, NewRow),
+    (
+        getValueFromMatrix(Board, NewRow, NewCol, empty) -> 
+            (ConfirmedC is NewCol, ConfirmedR is NewRow);
+            (write('This position is already occupied. Select again:\n'),
+            readInput(MoveRow, MoveCol, ConfirmedR, ConfirmedC, Board))
+    ).
+
 readRow(R1, NewRow):-
     write('Row:\n'),
     read(R1),
@@ -67,9 +77,9 @@ checkColumn(e, NewCol) :-
 checkColumn(f, NewCol) :-
     NewCol = 6.
 
-checkColumn(_Column, NewColumn) :-
+checkColumn(_Column, NewCol) :-
     write('Invalid Column!\nSelect again:\n'),
-    readColumn(Input ,NewCol).
+    readColumn(Input, NewCol).
 
 
 replaceInList([_H|T], 0, Value, [Value|T]).

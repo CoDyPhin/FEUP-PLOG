@@ -33,10 +33,9 @@ endGame:-
 
 
 playMove(Player, NextPlayer, Board, NewBoard):-
-    readRow(R1, Row1),
-    readColumn(C1, Col1),
-    RowIndex is Row1 - 1,
-    ColumnIndex is Col1 - 1,
+    readInput(Row1, Col1, CRow, CCol, Board),
+    RowIndex is CRow - 1,
+    ColumnIndex is CCol - 1,
     (   Player =:= 1 -> 
         replaceInMatrix(Board, RowIndex, ColumnIndex, plyr1, NewBoard)
     ;   Player =:= 2 ->
