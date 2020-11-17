@@ -1,3 +1,4 @@
+:- consult('menu.pl').
 :- consult('game.pl').
 :- consult('utils.pl').
 :- consult('tabuleiro.pl').
@@ -5,4 +6,4 @@
 :-use_module(library(lists)).
 
 gekitai :-
-    play.
+    mainMenu.

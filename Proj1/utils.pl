@@ -7,280 +7,191 @@ flatten([L|Ls], FlatL) :-
 flatten(L, [L]).
 
 getValueFromMatrix(Board, Row, Col, Value) :-
+    Row > 0,
+    Col > 0,
     nth1(Row, Board, NewRow),
     nth1(Col, NewRow, Value).
 
-checkTopLeftDiagonal(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row-1,
-    NewCol is Column-1,
-    NewRow > 0,
-    NewCol > 0,
-    getValueFromMatrix(Board,NewRow,NewCol,P),
-    (P==empty->replaceInMatrix(Board,NewRow,NewCol,Piece,UpdatedBoard1), replaceInMatrix(UpdatedBoard1,Row,Column,empty,UpdatedBoard);
-    UpdatedBoard = Board).
 
-checkTopLeftDiagonal(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row-1,
-    NewRow =< 0,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard);
-    NewCol is Column-1,
-    NewCol =< 0,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard).
-
-checkTopLeftDiagonal(N,Row,Column,Piece,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row-1,
-    NewRow =< 0,
-    UpdatedBoard = Board;
-    NewCol is Column-1,
-    NewCol =< 0,
-    UpdatedBoard = Board.
-
-checkTopLeftDiagonal(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row-1,
-    NewCol is Column-1,
-    NewRow > 0,
-    NewCol > 0,
-    NewN is N-1,
-    getValueFromMatrix(Board,NewRow,NewCol,Piece),
-    (Piece==empty->UpdatedBoard = Board;
-    checkTopLeftDiagonal(NewN,NewRow,NewCol,Piece,Board,UpdatedBoard)).
+checkUpLeftPiece(Board,NewBoard,1,_):-
+	NewBoard = Board.
 
 
-checkUpperColumn(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row-1,
-    NewRow > 0,
-    getValueFromMatrix(Board,NewRow,Column,P),
-    (P==empty->replaceInMatrix(Board,NewRow,Column,Piece,UpdatedBoard1), replaceInMatrix(UpdatedBoard1,Row,Column,empty,UpdatedBoard);
-    UpdatedBoard = Board).
-
-checkUpperColumn(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row-1,
-    NewRow =< 0,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard).
-
-checkUpperColumn(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row-1,
-    NewRow > 0,
-    NewN is N-1,
-    getValueFromMatrix(Board,NewRow,Column,Piece),
-    (Piece==empty->UpdatedBoard = Board;
-    checkUpperColumn(NewN,NewRow,Column,Piece,Board,UpdatedBoard)).
-
-checkUpperColumn(N,Row,Column,Piece,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row-1,
-    NewRow =< 0,
-    UpdatedBoard = Board.
+checkUpLeftPiece(Board,NewBoard,_,1):-
+	NewBoard = Board.
 
 
-checkTopRightDiagonal(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row-1,
-    NewRow > 0,
-    NewCol is Column+1,
-    NewCol < 7,
-    getValueFromMatrix(Board,NewRow,NewCol,P),
-    (P==empty->replaceInMatrix(Board,NewRow,NewCol,Piece,UpdatedBoard1), replaceInMatrix(UpdatedBoard1,Row,Column,empty,UpdatedBoard);
-    UpdatedBoard = Board).
+checkUpLeftPiece(Board, NewBoard, Row, Column):-
+	Column > 2,
+	Row > 2,
+	AuxCol is Column-1,
+	AuxRow is Row-1,
+	NextAuxRow is Row-2,
+	NextAuxCol is Column-2,
+	getValueFromMatrix(Board, AuxRow, AuxCol, Piece),
+	getValueFromMatrix(Board, NextAuxRow, NextAuxCol, NextPiece),
+	(
+		((Piece \= empty, NextPiece == empty) -> (replaceInMatrix(Board, NextAuxRow, NextAuxCol, Piece, TempBoard), replaceInMatrix(TempBoard, AuxRow, AuxCol, empty, NewBoard))) ; NewBoard = Board
+	).
+	
+checkUpLeftPiece(Board, NewBoard, Row, Column):-
+	Column > 1,
+	Row > 1,
+	AuxCol is Column-1,
+	AuxRow is Row-1,
+	replaceInMatrix(Board, AuxRow, AuxCol, empty, NewBoard).
 
-checkTopRightDiagonal(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row-1,
-    NewRow =< 0,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard);
-    NewCol is Column+1,
-    NewCol >= 7,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard).
+
+checkUpPiece(Board, NewBoard, 1, _):-
+	NewBoard = Board.
+
+checkUpPiece(Board, NewBoard, Row, Column):-
+	Row > 2,
+	AuxRow is Row - 1,
+	getValueFromMatrix(Board, AuxRow, Column, Piece),
+	NextAuxRow is Row - 2,
+	getValueFromMatrix(Board, NextAuxRow, Column, NextPiece),
+	(
+		((Piece \= empty, NextPiece == empty) -> (replaceInMatrix(Board, NextAuxRow, Column, Piece, TempBoard), replaceInMatrix(TempBoard, AuxRow, Column, empty, NewBoard))) ; NewBoard = Board
+	).
+
+checkUpPiece(Board, NewBoard, Row, Column):-
+	Row > 1,
+	AuxRow is Row-1,
+	replaceInMatrix(Board, AuxRow, Column, empty, NewBoard).
+
+
+checkUpRightPiece(Board, NewBoard, 1, _):-
+	NewBoard = Board.
+
+
+checkUpRightPiece(Board, NewBoard, _, 6):-
+	NewBoard = Board.
+
+checkUpRightPiece(Board, NewBoard, Row, Column):-
+	Column < 5,
+	Row > 2,
+	AuxCol is Column+1,
+	AuxRow is Row-1,
+	NextAuxRow is Row-2,
+	NextAuxCol is Column+2,
+	getValueFromMatrix(Board, AuxRow, AuxCol, Piece),
+	getValueFromMatrix(Board, NextAuxRow, NextAuxCol, NextPiece),
+	(
+		((Piece \= empty, NextPiece == empty) -> (replaceInMatrix(Board, NextAuxRow, NextAuxCol, Piece, TempBoard), replaceInMatrix(TempBoard, AuxRow, AuxCol, empty, NewBoard))) ; NewBoard = Board
+	).
+
+checkUpRightPiece(Board, NewBoard, Row, Column):-
+	Column < 6,
+	Row > 1,
+	AuxCol is Column + 1,
+	AuxRow is Row - 1,
+	replaceInMatrix(Board, AuxRow, AuxCol, empty, NewBoard).
+
+checkRightPiece(Board, NewBoard, _, 6):-
+	NewBoard = Board.
+
+checkRightPiece(Board, NewBoard, Row, Column):-
+	Column < 5,
+	AuxCol is Column + 1,
+	getValueFromMatrix(Board, Row, AuxCol, Piece),
+	NextAuxCol is Column + 2,
+	getValueFromMatrix(Board, Row, NextAuxCol, NextPiece),
+	(
+		((Piece \= empty, NextPiece == empty) -> (replaceInMatrix(Board, Row, NextAuxCol, Piece, TempBoard), replaceInMatrix(TempBoard, Row, AuxCol, empty, NewBoard))) ; NewBoard = Board
+	).
+
+checkRightPiece(Board, NewBoard, Row, Column):-
+	Column < 6,
+	AuxCol is Column + 1,
+	replaceInMatrix(Board, Row, AuxCol, empty, NewBoard).
     
 
-checkTopRightDiagonal(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row-1,
-    NewCol is Column+1,
-    NewRow > 0,
-    NewCol < 7,
-    NewN is N-1,
-    getValueFromMatrix(Board,NewRow,NewCol,Piece),
-    (Piece==empty->UpdatedBoard = Board;
-    checkTopRightDiagonal(NewN,NewRow,NewCol,Piece,Board,UpdatedBoard)).
+checkDownRightPiece(Board, NewBoard, 6, _):-
+	NewBoard = Board.
 
+checkDownRightPiece(Board, NewBoard, _, 6):-
+	NewBoard = Board.
 
-checkTopRightDiagonal(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row-1,
-    NewRow =< 0,
-    UpdatedBoard = Board;
-    NewCol is Column+1,
-    NewCol >= 7,
-    UpdatedBoard = Board.
+checkDownRightPiece(Board, NewBoard, Row, Column):-
+	Column < 5,
+	Row < 5,
+	AuxCol is Column+1,
+	AuxRow is Row+1,
+	NextAuxRow is Row+2,
+	NextAuxCol is Column+2,
+	getValueFromMatrix(Board, AuxRow, AuxCol, Piece),
+	getValueFromMatrix(Board, NextAuxRow, NextAuxCol, NextPiece),
+	(
+		((Piece \= empty, NextPiece == empty) -> (replaceInMatrix(Board, NextAuxRow, NextAuxCol, Piece, TempBoard), replaceInMatrix(TempBoard, AuxRow, AuxCol, empty, NewBoard))) ; NewBoard = Board
+	).
 
+checkDownRightPiece(Board, NewBoard, Row, Column):-
+	Column < 6,
+	Row < 6,
+	AuxCol is Column + 1,
+	AuxRow is Row + 1,
+	replaceInMatrix(Board, AuxRow, AuxCol, empty, NewBoard).
 
-checkRightRow(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewCol is Column+1,
-    NewCol < 7,
-    getValueFromMatrix(Board,Row,NewCol,P),
-    (P==empty->replaceInMatrix(Board,Row,NewCol,Piece,UpdatedBoard1), replaceInMatrix(UpdatedBoard1,Row,Column,empty,UpdatedBoard);
-    UpdatedBoard = Board).
+checkDownPiece(Board, NewBoard, 6, _):-
+	NewBoard = Board.
 
-checkRightRow(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewCol is Column+1,
-    NewCol >= 7,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard).
+checkDownPiece(Board, NewBoard, Row, Column):-
+	Row < 5,
+	AuxRow is Row + 1,
+	getValueFromMatrix(Board, AuxRow, Column, Piece),
+	NextAuxRow is Row + 2,
+	getValueFromMatrix(Board, NextAuxRow, Column, NextPiece),
+	(
+		((Piece \= empty, NextPiece == empty) -> (replaceInMatrix(Board, NextAuxRow, Column, Piece, TempBoard), replaceInMatrix(TempBoard, AuxRow, Column, empty, NewBoard))) ; NewBoard = Board
+	).
 
-checkRightRow(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewCol is Column+1,
-    NewCol < 7,
-    NewN is N-1,
-    getValueFromMatrix(Board,Row,NewCol,Piece),
-    (Piece==empty->UpdatedBoard = Board;
-    checkRightRow(NewN,Row,NewCol,Piece,Board,UpdatedBoard)).
+checkDownPiece(Board, NewBoard, Row, Column):-
+	Row < 6,
+	AuxRow is Row + 1,
+	replaceInMatrix(Board, AuxRow, Column, empty, NewBoard).
 
-checkRightRow(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewCol is Column+1,
-    NewCol >= 7,
-    UpdatedBoard = Board.
+checkDownLeftPiece(Board, NewBoard, 6, _):-
+	NewBoard = Board.
 
-checkBottomRightDiagonal(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row+1,
-    NewRow < 7,
-    NewCol is Column+1,
-    NewCol < 7,
-    getValueFromMatrix(Board,NewRow,NewCol,P),
-    (P==empty->replaceInMatrix(Board,NewRow,NewCol,Piece,UpdatedBoard1), replaceInMatrix(UpdatedBoard1,Row,Column,empty,UpdatedBoard);
-    UpdatedBoard = Board).
+checkDownLeftPiece(Board, NewBoard, _, 1):-
+	NewBoard = Board.
 
-checkBottomRightDiagonal(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row+1,
-    NewRow >= 7,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard);
-    NewCol is Column+1,
-    NewCol >= 7,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard).
+checkDownLeftPiece(Board, NewBoard, Row, Column):-
+	Column > 2,
+	Row < 5,
+	AuxCol is Column-1,
+	AuxRow is Row+1,
+	NextAuxRow is Row+2,
+	NextAuxCol is Column-2,
+	getValueFromMatrix(Board, AuxRow, AuxCol, Piece),
+	getValueFromMatrix(Board, NextAuxRow, NextAuxCol, NextPiece),
+	(
+		((Piece \= empty, NextPiece == empty) -> (replaceInMatrix(Board, NextAuxRow, NextAuxCol, Piece, TempBoard), replaceInMatrix(TempBoard, AuxRow, AuxCol, empty, NewBoard))) ; NewBoard = Board
+	).
 
-checkBottomRightDiagonal(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row+1,
-    NewRow < 7,
-    NewCol is Column+1,
-    NewCol < 7,
-    NewN is N-1,
-    getValueFromMatrix(Board,NewRow,NewCol,Piece),
-    (Piece==empty->UpdatedBoard = Board;
-    checkBottomRightDiagonal(NewN,NewRow,NewCol,Piece,Board,UpdatedBoard)).
+checkDownLeftPiece(Board, NewBoard, Row, Column):-
+	Column > 1,
+	Row < 6,
+	AuxCol is Column - 1,
+	AuxRow is Row + 1,
+	replaceInMatrix(Board, AuxRow, AuxCol, empty, NewBoard).
 
-checkBottomRightDiagonal(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row+1,
-    NewRow >= 7,
-    UpdatedBoard = Board;
-    NewCol is Column+1,
-    NewCol >= 7,
-    UpdatedBoard = Board.
+checkLeftPiece(Board, NewBoard, _, 1):-
+	NewBoard = Board.
 
-checkBottomColumn(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row+1,
-    NewRow < 7,
-    getValueFromMatrix(Board,NewRow,Column,P),
-    (P==empty->replaceInMatrix(Board,NewRow,Column,Piece,UpdatedBoard1), replaceInMatrix(UpdatedBoard1,Row,Column,empty,UpdatedBoard);
-    UpdatedBoard = Board).
+checkLeftPiece(Board, NewBoard, Row, Column):-
+	Column > 2,
+	AuxCol is Column - 1,
+	getValueFromMatrix(Board, Row, AuxCol, Piece),
+	NextAuxCol is Column - 2,
+	getValueFromMatrix(Board, Row, NextAuxCol, NextPiece),
+	(
+		((Piece \= empty, NextPiece == empty) -> (replaceInMatrix(Board, Row, NextAuxCol, Piece, TempBoard), replaceInMatrix(TempBoard, Row, AuxCol, empty, NewBoard))) ; NewBoard = Board
+	).
 
-checkBottomColumn(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row+1,
-    NewRow >= 7,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard).
-
-checkBottomColumn(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row+1,
-    NewRow < 7,
-    NewN is N-1,
-    getValueFromMatrix(Board,NewRow,Column,Piece),
-    (Piece==empty->UpdatedBoard = Board;
-    checkBottomColumn(NewN,NewRow,Column,Piece,Board,UpdatedBoard)).
-
-checkBottomColumn(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row+1,
-    NewRow >= 7,
-    UpdatedBoard = Board.
-
-checkBottomLeftDiagonal(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row+1,
-    NewRow < 7,
-    NewCol is Column-1,
-    NewCol > 0,
-    getValueFromMatrix(Board,NewRow,NewCol,P),
-    (P==empty->replaceInMatrix(Board,NewRow,NewCol,Piece,UpdatedBoard1), replaceInMatrix(UpdatedBoard1,Row,Column,0,UpdatedBoard);
-    UpdatedBoard = Board).
-
-checkBottomLeftDiagonal(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewRow is Row+1,
-    NewRow >= 7,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard);
-    NewCol is Column-1,
-    NewCol =< 0,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard).
-
-checkBottomLeftDiagonal(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row+1,
-    NewRow < 7,
-    NewCol is Column-1,
-    NewCol > 0,
-    NewN is N-1,
-    getValueFromMatrix(Board,NewRow,NewCol,Piece),
-    (Piece==empty->UpdatedBoard = Board;
-    checkBottomLeftDiagonal(NewN,NewRow,NewCol,Piece,Board,UpdatedBoard)).
-
-checkBottomLeftDiagonal(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewRow is Row+1,
-    NewRow >= 7,
-    UpdatedBoard = Board;
-    NewCol is Column-1,
-    NewCol =< 0,
-    UpdatedBoard = Board.
-
-
-checkLefttRow(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewCol is Column-1,
-    NewCol > 0,
-    getValueFromMatrix(Board,Row,NewCol,P),
-    (P==empty->replaceInMatrix(Board,Row,NewCol,Piece,UpdatedBoard1), replaceInMatrix(UpdatedBoard1,Row,Column,empty,UpdatedBoard);
-    UpdatedBoard = Board).
-
-checkLefttRow(0,Row,Column,Piece,Board,UpdatedBoard):-
-    NewCol is Column-1,
-    NewCol =< 0,
-    replaceInMatrix(Board,Row,Column,empty,UpdatedBoard).
-
-checkLefttRow(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewCol is Column-1,
-    NewCol > 0,
-    NewN is N-1,
-    getValueFromMatrix(Board,Row,NewCol,Piece),
-    (Piece==empty->UpdatedBoard = Board;
-    checkLefttRow(NewN,Row,NewCol,Piece,Board,UpdatedBoard)).
-
-checkLefttRow(N,Row,Column,P,Board,UpdatedBoard):-
-    N > 0,
-    NewCol is Column-1,
-    NewCol =< 0,
-    UpdatedBoard = Board.
-    
-
-repulsion(Row,Column,P,Board,UpdatedBoard):-
-    checkTopLeftDiagonal(1,Row,Column,P,Board,UpdatedBoard1),
-    checkUpperColumn(1,Row,Column,P,UpdatedBoard1,UpdatedBoard2),
-    checkTopRightDiagonal(1,Row,Column,P,UpdatedBoard2,UpdatedBoard3),
-    checkRightRow(1,Row,Column,P,UpdatedBoard3,UpdatedBoard4),
-    checkBottomRightDiagonal(1,Row,Column,P,UpdatedBoard4,UpdatedBoard5),
-    checkBottomColumn(1,Row,Column,P,UpdatedBoard5,UpdatedBoard6),
-    checkBottomLeftDiagonal(1,Row,Column,P,UpdatedBoard6,UpdatedBoard7),
-    checkLefttRow(1,Row,Column,P,UpdatedBoard7,UpdatedBoard).
-
+checkLeftPiece(Board, NewBoard, Row, Column):-
+	Column > 1,
+	AuxCol is Column - 1,
+	replaceInMatrix(Board, Row, AuxCol, empty, NewBoard).
      

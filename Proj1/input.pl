@@ -82,16 +82,16 @@ checkColumn(_Column, NewCol) :-
     readColumn(Input, NewCol).
 
 
-replaceInList([_H|T], 0, Value, [Value|T]).
+replaceInList([_H|T], 1, Value, [Value|T]).
 replaceInList([H|T], Index, Value, [H|TNew]) :-
-    Index > 0,
+    Index > 1,
     Index1 is Index - 1,
     replaceInList(T, Index1, Value, TNew).
 
-replaceInMatrix([H|T], 0, Column,Value, [HNew|T]) :-
+replaceInMatrix([H|T], 1, Column,Value, [HNew|T]) :-
     replaceInList(H, Column, Value, HNew).
 
 replaceInMatrix([H|T], Row, Column, Value, [H|TNew]) :-
-    Row > 0,
+    Row > 1,
     Row1 is Row - 1,
     replaceInMatrix(T, Row1, Column, Value, TNew).

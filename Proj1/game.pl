@@ -1,6 +1,6 @@
 :-dynamic(state/2).
 
-play :-
+play('P1', 'P2') :-
     initial(GameState),
     displayInitialBoard(GameState, 1),
     gameLoop('Player1','Player2').
@@ -34,18 +34,16 @@ endGame:-
 
 playMove(Player, NextPlayer, Board, NewBoard):-
     readInput(Row1, Col1, CRow, CCol, Board),
-    RowIndex is CRow - 1,
-    ColumnIndex is CCol - 1,
+    /*RowIndex is CRow - 1,
+    ColumnIndex is CCol - 1,*/
     (   Player =:= 1 -> 
-        replaceInMatrix(Board, RowIndex, ColumnIndex, plyr1, NewBoard)
+        replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard)
     ;   Player =:= 2 ->
-        replaceInMatrix(Board, RowIndex, ColumnIndex, plyr2, NewBoard)
-    ),/*!,
-    (   Player =:= 1 -> 
-        repulsion(CRow, CCol, plyr1, Board, NewBoard)
-    ;   Player =:= 2 ->
-        repulsion(CRow, CCol, plyr2, Board, NewBoard)
-    ),*/
+        replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard)
+    ),
+    nl, write('Após jogada:'), write(TempBoard),nl,
+    once(repulsions(TempBoard, NewBoard, CRow, CCol)),
+    nl, write('Após repulsions:'), write(NewBoard),nl,
     (
 		(Player =:= 1 ->
 		    NextPlayer is 2
@@ -132,6 +130,17 @@ checkAll(Board,Value):-
     flatten(Board, FlatBoard),
     eightOnBoard(FlatBoard, 1, Value, 8);
     checkAllAux(7,7,Board,Value).
+
+repulsions(Board, NewBoard, Row, Column):-
+	checkUpLeftPiece(Board, AuxBoard1, Row, Column),
+	checkUpPiece(AuxBoard1, AuxBoard2, Row, Column),
+	checkUpRightPiece(AuxBoard2, AuxBoard3, Row, Column),
+	checkRightPiece(AuxBoard3, AuxBoard4, Row, Column),
+	checkDownRightPiece(AuxBoard4, AuxBoard5, Row, Column),
+	checkDownPiece(AuxBoard5, AuxBoard6, Row, Column),
+	checkDownLeftPiece(AuxBoard6, AuxBoard7, Row, Column),
+	checkLeftPiece(AuxBoard7, NewBoard, Row, Column),
+	!.
 
 checkVictory(Board):-
     retract(winner(Player)),
