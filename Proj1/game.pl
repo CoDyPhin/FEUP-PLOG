@@ -2,14 +2,10 @@
 
 play('P1', 'P2') :-
     initial(GameState),
-    displayInitialBoard(GameState, 1),
     gameLoop('Player1','Player2').
 
 initial(GameState) :-
     initialBoard(GameState).
-
-displayInitialBoard(GameState, Player):-
-    display_game(GameState, Player).
 
 repeat.
 repeat:-repeat.
@@ -21,10 +17,11 @@ gameLoop(Player1,Player2) :-
     assert(state(1,InitialBoard)),
     repeat,
         retract(state(Player,Board)),
+        once(display_game(Board, Player)),
         once(playMove(Player,NextPlayer,Board,UpdatedBoard)),
         assert(state(NextPlayer,UpdatedBoard)),
-        once(display_game(UpdatedBoard, NextPlayer)),
         checkVictory(UpdatedBoard),
+    display_game(UpdatedBoard, 0),
     endGame.
     
 endGame:-
@@ -37,7 +34,7 @@ endGame:-
     read(Input),
     manageInput(Input).
 
-manageInput(0).
+manageInput(0):- write('Exiting...\n').
 
 manageInput(1):- mainMenu.
 
@@ -154,8 +151,8 @@ repulsions(Board, NewBoard, Row, Column):-
 
 checkVictory(Board):-
     ( 
-        checkAll(Board,plyr1) -> assert(winner(1)); true
-    ),
+        checkAll(Board,plyr1) -> assert(winner(1)); fail
+    );
     (
-        checkAll(Board,plyr2) -> assert(winner(2)); true
+        checkAll(Board,plyr2) -> assert(winner(2)); fail
     ).

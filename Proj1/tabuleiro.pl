@@ -30,6 +30,12 @@ symbol(plyr1,S) :- S='X'.
 symbol(plyr2,S) :- S='O'.
 symbol(_S,S) :- S='S'.
 
+display_game(X, 0):-
+    nl,
+    write('   | A | B | C | D | E | F |\n'),
+    write('---|---|---|---|---|---|---|\n'),
+    printMatrix(X,0).
+
 display_game(X, Player):-
     nl,
     write('   | A | B | C | D | E | F |\n'),
