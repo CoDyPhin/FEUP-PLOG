@@ -39,6 +39,10 @@ manageOption(0):- write('Exiting...\n').
 
 manageOption(1):- play('P1', 'P2').
 
+manageOption(2):- play('P1', 'PC1').
+
+manageOption(3):- play('PC1', 'PC2').
+
 manageOption(_):-
     write('Wrong option, choose a number from 0 to 3.'),nl,
     selectOption.

@@ -1,3 +1,6 @@
+indexToCol(ColNum, ColString):-
+	nth1(ColNum, ['A','B','C','D','E','F'], ColString).
+
 flatten([], []) :- !.
 flatten([L|Ls], FlatL) :-
     !,
