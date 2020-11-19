@@ -29,21 +29,31 @@ gameLoop(Player1,Player2) :-
     
 endGame:-
     winner(Player),
-    write('Player '), write(Player), write(' wins the game!\n').
+    write('Player '), write(Player), write(' wins the game!\n'),
+    retract(winner(Player)),
+    retract(move(_,_)),
+    retract(state(_,_)),
+    write('Return to main menu? [0] No    [1] Yes\n'),
+    read(Input),
+    manageInput(Input).
 
+manageInput(0).
+
+manageInput(1):- mainMenu.
+
+manageInput(_):- 
+    write('Wrong option!\n Return to main menu? [0] No    [1] Yes\n'), 
+    read(NewInput), 
+    manageInput(NewInput).
 
 playMove(Player, NextPlayer, Board, NewBoard):-
     readInput(Row1, Col1, CRow, CCol, Board),
-    /*RowIndex is CRow - 1,
-    ColumnIndex is CCol - 1,*/
     (   Player =:= 1 -> 
         replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard)
     ;   Player =:= 2 ->
         replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard)
     ),
-    nl, write('Após jogada:'), write(TempBoard),nl,
     once(repulsions(TempBoard, NewBoard, CRow, CCol)),
-    nl, write('Após repulsions:'), write(NewBoard),nl,
     (
 		(Player =:= 1 ->
 		    NextPlayer is 2
@@ -143,8 +153,9 @@ repulsions(Board, NewBoard, Row, Column):-
 	!.
 
 checkVictory(Board):-
-    retract(winner(Player)),
-    assert(winner(1)),
-    checkAll(Board,plyr1);
-    assert(winner(2)),
-    checkAll(Board,plyr2).
+    ( 
+        checkAll(Board,plyr1) -> assert(winner(1)); true
+    ),
+    (
+        checkAll(Board,plyr2) -> assert(winner(2)); true
+    ).
