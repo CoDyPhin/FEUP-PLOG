@@ -47,5 +47,36 @@ manageOption(_):-
     write('Wrong option, choose a number from 0 to 3.'),nl,
     selectOption.
 
-                                
+
+pauseMenu(Return):-
+    displayPMenu,
+    selectOption2(Return).
+
+displayPMenu:-
+    write('_________________________________________________________________\n'),
+    write('|                                                               |\n'),
+    write('|                                                               |\n'),
+    write('|                      Game Paused                              |\n'),
+    write('|                                                               |\n'),
+    write('|                      1. Resume                                |\n'),
+    write('|                      2. Return to Main Menu                   |\n'),
+    write('|                      0. Exit game                             |\n'),
+    write('|                                                               |\n'),
+    write('|_______________________________________________________________|\n').
+
+selectOption2(Return):-
+    write('Option: '),
+    read(Option2), nl,
+    manageOption2(Option2, Return).
+
+manageOption2(0, _):-
+    abort.
+
+manageOption2(1, Return):- Return is 1.
+
+manageOption2(2, Return):- Return is 2.
+
+manageOption2(_,Return):-
+    write('Wrong option, choose a number from 0 to 2.'),nl,
+    selectOption2(Return).
  

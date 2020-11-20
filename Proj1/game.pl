@@ -1,55 +1,37 @@
 :-dynamic(state/2).
 
-play('P1', 'P2') :-
-    initial(GameState),
-    gameLoop('P1','P2').
-
-play('PC1', 'PC2'):-
-    initial(GameState),
-    gameLoop('PC1', 'PC2').
-
-play('P1', 'PC1'):-
-    initial(GameState),
-    gameLoop('P1', 'PC1').
-
 initial(GameState) :-
     initialBoard(GameState).
 
 repeat.
 repeat:-repeat.
 
-gameLoop('P1','P2'):-
+play('P1','P2'):-
     initial(InitialBoard),
-    assert(move(1,Player1)),
-    assert(move(2,Player2)),
     assert(state(1,InitialBoard)),
     repeat,
         retract(state(Player,Board)),
         once(display_game(Board, Player)),
-        once(playMove(Player,NextPlayer,Board,UpdatedBoard,0)),
+        once(playMove(Player,NextPlayer,Board,UpdatedBoard,0, Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
-        checkVictory(UpdatedBoard),
-    display_game(UpdatedBoard, 0),
+        checkVictory(UpdatedBoard, Flag),
+    display_game(UpdatedBoard, 0), 
     endGame.
     
-gameLoop('PC1', 'PC2'):-
+play('PC1', 'PC2'):-
     initial(InitialBoard),
-    assert(move(1,Player1)),
-    assert(move(2,Player2)),
     assert(state(1,InitialBoard)),
     repeat,
         retract(state(Player,Board)),
         once(display_game(Board, Player)),
-        once(playMove(Player,NextPlayer,Board,UpdatedBoard,1)),
+        once(playMove(Player,NextPlayer,Board,UpdatedBoard,1, _)),
         assert(state(NextPlayer,UpdatedBoard)),
-        checkVictory(UpdatedBoard),
+        checkVictory(UpdatedBoard,_),
     display_game(UpdatedBoard, 0),
     endGame.
 
-gameLoop('P1', 'PC1'):-
+play('P1', 'PC1'):-
     initial(InitialBoard),
-    assert(move(1,Player1)),
-    assert(move(2,Player2)),
     assert(state(1,InitialBoard)),
     repeat,
         retract(state(Player,Board)),
@@ -57,18 +39,21 @@ gameLoop('P1', 'PC1'):-
         (
             Player =:= 2 -> PCFlag is 1; PCFlag is 0
         ),
-        once(playMove(Player,NextPlayer,Board,UpdatedBoard,PCFlag)),
+        once(playMove(Player,NextPlayer,Board,UpdatedBoard,PCFlag, Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
-        checkVictory(UpdatedBoard),
-    display_game(UpdatedBoard, 0),
+        checkVictory(UpdatedBoard, Flag),
+    display_game(UpdatedBoard, 0), 
     endGame.
 
 endGame:-
     winner(Player),
-    write('Player '), write(Player), write(' wins the game!\n'),
-    retract(winner(Player)),
-    retract(move(_,_)),
+    retract(winner(_)),
     retract(state(_,_)),
+    (
+        Player =:= 0 -> mainMenu; (write('Player '), write(Player), write(' wins the game!\n'), checkMMenuInput)
+    ).
+
+checkMMenuInput:-
     write('Return to main menu? [0] No    [1] Yes\n'),
     read(Input),
     manageInput(Input).
@@ -82,7 +67,7 @@ manageInput(_):-
     read(NewInput), 
     manageInput(NewInput).
 
-playMove(Player, NextPlayer, Board, NewBoard, 1):-
+playMove(Player, NextPlayer, Board, NewBoard, 1, Flag):-
     decideMove(CRow, CCol, Board),
     (   Player =:= 1 -> 
         replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard)
@@ -90,6 +75,7 @@ playMove(Player, NextPlayer, Board, NewBoard, 1):-
         replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard)
     ),
     once(repulsions(TempBoard, NewBoard, CRow, CCol)),
+    Flag is 0,
     (
 		(Player =:= 1 ->
 		    NextPlayer is 2
@@ -100,23 +86,25 @@ playMove(Player, NextPlayer, Board, NewBoard, 1):-
 		)
 	).
 
-playMove(Player, NextPlayer, Board, NewBoard, 0):-
-    readInput(Row1, Col1, CRow, CCol, Board),
-    (   Player =:= 1 -> 
+playMove(Player, NextPlayer, Board, NewBoard, 0, Flag):-
+    (readInput(Row1, Col1, CRow, CCol, Board) ->
+    (
+        (   Player =:= 1 -> 
         replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard)
     ;   Player =:= 2 ->
         replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard)
     ),
     once(repulsions(TempBoard, NewBoard, CRow, CCol)),
+    Flag is 0,
     (
-		(Player =:= 1 ->
-		    NextPlayer is 2
-		);
-
-		(Player =:= 2 ->
-			NextPlayer is 1
-		)
-	).
+	    (Player =:= 1 ->
+            NextPlayer is 2
+        );
+        (Player =:= 2 ->
+  		    NextPlayer is 1
+       	)
+    ), true
+    );(Flag is 1, NewBoard = Board, NextPlayer is Player, true)).
 
 threeInLDiag(0,_,_,_,_).
 
@@ -206,7 +194,10 @@ repulsions(Board, NewBoard, Row, Column):-
 	checkLeftPiece(AuxBoard7, NewBoard, Row, Column),
 	!.
 
-checkVictory(Board):-
+checkVictory(Board, Flag):-
+    (
+        Flag =:= 1 -> assert(winner(0)); fail
+    );
     ( 
         checkAll(Board,plyr1) -> assert(winner(1)); fail
     );

@@ -1,6 +1,10 @@
 readInput(NewRow, NewCol, ConfirmedR, ConfirmedC, Board):-
-    readColumn(C1, NewCol),
-    readRow(R1, NewRow),
+    (
+        readColumn(C1, NewCol) -> true; (!,fail)
+    ),
+    (
+        readRow(R1, NewRow) -> true; (!,fail)
+    ),
     (
         getValueFromMatrix(Board, NewRow, NewCol, empty) -> 
             (ConfirmedC is NewCol, ConfirmedR is NewRow);
@@ -31,7 +35,17 @@ checkRow(5, NewRow) :-
 checkRow(6, NewRow) :-
     NewRow = 6.
 
-checkRow(_Row, NewRow) :-
+checkRow('pause', NewRow):-
+    pauseMenu(Return),
+    (
+        Return =:= 1 -> readRow(Input2, NewRow); true
+    ),
+    (
+        Return =:= 2 -> (!,fail); true
+    ).
+
+
+checkRow(_, NewRow) :-
     write('Invalid Row!\nSelect again:\n'),
     readRow(Input, NewRow).
 
@@ -77,7 +91,16 @@ checkColumn(e, NewCol) :-
 checkColumn(f, NewCol) :-
     NewCol = 6.
 
-checkColumn(_Column, NewCol) :-
+checkColumn('pause', NewCol):-
+    pauseMenu(Return),
+    (
+        Return =:= 1 -> readColumn(Input2, NewCol); true
+    ),
+    (
+        Return =:= 2 -> (!,fail); true
+    ).
+
+checkColumn(_, NewCol) :-
     write('Invalid Column!\nSelect again:\n'),
     readColumn(Input, NewCol).
 
