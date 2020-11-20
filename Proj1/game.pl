@@ -24,9 +24,9 @@ play('PC1', 'PC2'):-
     repeat,
         retract(state(Player,Board)),
         once(display_game(Board, Player)),
-        once(playMove(Player,NextPlayer,Board,UpdatedBoard,1, _)),
+        once(playMove(Player,NextPlayer,Board,UpdatedBoard,1,Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
-        checkVictory(UpdatedBoard,_),
+        checkVictory(UpdatedBoard,Flag),
     display_game(UpdatedBoard, 0),
     endGame.
 
