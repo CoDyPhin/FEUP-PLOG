@@ -44,6 +44,24 @@ checkRow('pause', NewRow):-
         Return =:= 2 -> (!,fail); true
     ).
 
+checkRow('P', NewRow):-
+    pauseMenu(Return),
+    (
+        Return =:= 1 -> readRow(Input2, NewRow); true
+    ),
+    (
+        Return =:= 2 -> (!,fail); true
+    ).
+
+checkRow(p, NewRow):-
+    pauseMenu(Return),
+    (
+        Return =:= 1 -> readRow(Input2, NewRow); true
+    ),
+    (
+        Return =:= 2 -> (!,fail); true
+    ).
+
 
 checkRow(_, NewRow) :-
     write('Invalid Row!\nSelect again:\n'),
@@ -92,6 +110,24 @@ checkColumn(f, NewCol) :-
     NewCol = 6.
 
 checkColumn('pause', NewCol):-
+    pauseMenu(Return),
+    (
+        Return =:= 1 -> readColumn(Input2, NewCol); true
+    ),
+    (
+        Return =:= 2 -> (!,fail); true
+    ).
+
+checkColumn('P', NewCol):-
+    pauseMenu(Return),
+    (
+        Return =:= 1 -> readColumn(Input2, NewCol); true
+    ),
+    (
+        Return =:= 2 -> (!,fail); true
+    ).
+
+checkColumn(p, NewCol):-
     pauseMenu(Return),
     (
         Return =:= 1 -> readColumn(Input2, NewCol); true
