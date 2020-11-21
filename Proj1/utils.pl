@@ -9,6 +9,20 @@ flatten([L|Ls], FlatL) :-
     append(NewL, NewLs, FlatL).
 flatten(L, [L]).
 
+replaceInList([_H|T], 1, Value, [Value|T]).
+replaceInList([H|T], Index, Value, [H|TNew]) :-
+    Index > 1,
+    Index1 is Index - 1,
+    replaceInList(T, Index1, Value, TNew).
+
+replaceInMatrix([H|T], 1, Column,Value, [HNew|T]) :-
+    replaceInList(H, Column, Value, HNew).
+
+replaceInMatrix([H|T], Row, Column, Value, [H|TNew]) :-
+    Row > 1,
+    Row1 is Row - 1,
+    replaceInMatrix(T, Row1, Column, Value, TNew).
+
 getValueFromMatrix(Board, Row, Col, Value) :-
     Row > 0,
     Col > 0,
@@ -198,3 +212,114 @@ checkLeftPiece(Board, NewBoard, Row, Column):-
 	AuxCol is Column - 1,
 	replaceInMatrix(Board, Row, AuxCol, empty, NewBoard).
      
+
+piecesOnBoard(_,37,_,Counter,Points):- Points is Counter.
+
+piecesOnBoard(Board, Index, Value, Counter, Points):-
+    NewI is Index+1,
+    (
+        nth1(Index, Board, Value) -> NewC is Counter+1; NewC is Counter
+    ),
+    piecesOnBoard(Board, NewI, Value, NewC, Points),!.
+
+twoInCol(_,0,0,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
+
+twoInCol(Counter,0,Col,Board, Value, CurrentPoints, FinalPoints):- 
+	NewCol is Col-1,
+	twoInCol(0, 6, NewCol, Board, Value, CurrentPoints, FinalPoints).
+
+twoInCol(Counter,Row,Col,Board,Value, CurrentP, Points):-
+	(
+		Counter =:= 2 -> (NewCounter is 0, NewCurrentP is CurrentP+1); 
+		(NewCounter is Counter, NewCurrentP is CurrentP)
+	),
+    (
+		getValueFromMatrix(Board,Row,Col,Value) -> NCounter is NewCounter+1; NCounter is 0
+	),
+	NewRow is Row-1,
+	twoInCol(NCounter,NewRow,Col,Board,Value, NewCurrentP, Points).
+
+
+twoInRDiag(_,_,_,1,1,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
+
+twoInRDiag(Counter,0,_,RowCounter,1,Board, Value, CurrentPoints, FinalPoints):- 
+	NewRCounter is RowCounter-1,
+	NewRow is RowCounter,
+	twoInRDiag(0, NewRow, 6,NewRCounter,1, Board, Value, CurrentPoints, FinalPoints).
+
+twoInRDiag(Counter,_,_,6,1,Board, Value, CurrentPoints, FinalPoints):- 
+	NewRCounter is RowCounter-1,
+	NewRow is RowCounter,
+	twoInRDiag(0, NewRow, 6,NewRCounter,1, Board, Value, CurrentPoints, FinalPoints).
+
+twoInRDiag(Counter,_,0,6,ColCounter,Board, Value, CurrentPoints, FinalPoints):- 
+	NewCCounter is ColCounter-1,
+	NewCol is ColCounter,
+	twoInRDiag(0, 6, NewCol,RowCounter,NewCCounter, Board, Value, CurrentPoints, FinalPoints).
+
+twoInRDiag(Counter,Row,Col,RowCounter, ColCounter, Board,Value, CurrentP, Points):-
+	(
+		Counter =:= 2 -> (NewCounter is 0, NewCurrentP is CurrentP+1); 
+		(NewCounter is Counter, NewCurrentP is CurrentP)
+	),
+    (
+		getValueFromMatrix(Board,Row,Col,Value) -> NCounter is NewCounter+1; NCounter is 0
+	),
+	NewCol is Col-1,
+	NewRow is Row-1,
+	twoInRDiag(NCounter,NewRow,NewCol,RowCounter,ColCounter,Board,Value, NewCurrentP, Points).
+
+
+twoInLDiag(_,_,_,1,6,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
+
+twoInLDiag(Counter,0,_,RowCounter,6,Board, Value, CurrentPoints, FinalPoints):- 
+	NewRCounter is RowCounter-1,
+	NewRow is RowCounter,
+	twoInLDiag(0, NewRow, 1,NewRCounter,6, Board, Value, CurrentPoints, FinalPoints).
+
+twoInLDiag(Counter,_,_,6,6,Board, Value, CurrentPoints, FinalPoints):- 
+	NewRCounter is RowCounter-1,
+	NewRow is RowCounter,
+	twoInLDiag(0, NewRow, 1,NewRCounter,6, Board, Value, CurrentPoints, FinalPoints).
+
+twoInLDiag(Counter,_,7,6,ColCounter,Board, Value, CurrentPoints, FinalPoints):- 
+	NewCCounter is ColCounter+1,
+	NewCol is ColCounter,
+	twoInLDiag(0, 6, NewCol,RowCounter,NewCCounter, Board, Value, CurrentPoints, FinalPoints).
+
+twoInLDiag(Counter,Row,Col,RowCounter, ColCounter, Board,Value, CurrentP, Points):-
+	(
+		Counter =:= 2 -> (NewCounter is 0, NewCurrentP is CurrentP+1); 
+		(NewCounter is Counter, NewCurrentP is CurrentP)
+	),
+    (
+		getValueFromMatrix(Board,Row,Col,Value) -> NCounter is NewCounter+1; NCounter is 0
+	),
+	NewCol is Col+1,
+	NewRow is Row-1,
+	twoInLDiag(NCounter,NewRow,NewCol,RowCounter,ColCounter,Board,Value, NewCurrentP, Points).
+
+
+twoInRow(_,0,0,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
+
+twoInRow(Counter,Row,0,Board, Value, CurrentPoints, FinalPoints):- 
+	NewRow is Row-1,
+	twoInRow(0, NewRow, 6, Board, Value, CurrentPoints, FinalPoints).
+
+twoInRow(Counter,Row,Col,Board,Value, CurrentP, Points):-
+	(
+		Counter =:= 2 -> (NewCounter is 0, NewCurrentP is CurrentP+1); 
+		(NewCounter is Counter, NewCurrentP is CurrentP)
+	),
+    (
+		getValueFromMatrix(Board,Row,Col,Value) -> NCounter is NewCounter+1; NCounter is 0
+	),
+	NewCol is Col-1,
+	twoInRow(NCounter,Row,NewCol,Board,Value, NewCurrentP, Points).
+
+directionalPoints(Board, Value, Points):-
+	twoInRow(0, 6, 6, Board, Value, 0, PointsR),
+	twoInCol(0, 6, 6, Board, Value, 0, PointsC),
+	twoInRDiag(0, 6, 6, 6, 6, Board, Value, 0, PointsRD),
+	twoInLDiag(0, 6, 1, 6, 1, Board, Value, 0, PointsLD),
+	!,Points is PointsR+PointsC+PointsRD+PointsLD.

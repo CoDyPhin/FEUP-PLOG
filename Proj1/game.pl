@@ -18,7 +18,7 @@ play('P1','P2'):-
     display_game(UpdatedBoard, 0), 
     endGame.
     
-play('PC1', 'PC2'):-
+play('B1', 'B1'):-
     initial(InitialBoard),
     assert(state(1,InitialBoard)),
     repeat,
@@ -30,7 +30,64 @@ play('PC1', 'PC2'):-
     display_game(UpdatedBoard, 0),
     endGame.
 
-play('P1', 'PC1'):-
+play('B1', 'B2'):-
+    initial(InitialBoard),
+    assert(state(1,InitialBoard)),
+    repeat,
+        retract(state(Player,Board)),
+        once(display_game(Board, Player)),
+        (
+            Player =:= 2 -> PCFlag is 2; PCFlag is 1
+        ),
+        once(playMove(Player,NextPlayer,Board,UpdatedBoard,PCFlag, Flag)),
+        assert(state(NextPlayer,UpdatedBoard)),
+        checkVictory(UpdatedBoard,Flag),
+    display_game(UpdatedBoard, 0),
+    endGame.
+
+play('B2', 'B1'):-
+    initial(InitialBoard),
+    assert(state(1,InitialBoard)),
+    repeat,
+        retract(state(Player,Board)),
+        once(display_game(Board, Player)),
+        (
+            Player =:= 2 -> PCFlag is 1; PCFlag is 2
+        ),
+        once(playMove(Player,NextPlayer,Board,UpdatedBoard,PCFlag, Flag)),
+        assert(state(NextPlayer,UpdatedBoard)),
+        checkVictory(UpdatedBoard,Flag),
+    display_game(UpdatedBoard, 0),
+    endGame.
+
+play('B2', 'B2'):-
+    initial(InitialBoard),
+    assert(state(1,InitialBoard)),
+    repeat,
+        retract(state(Player,Board)),
+        once(display_game(Board, Player)),
+        once(playMove(Player,NextPlayer,Board,UpdatedBoard,2, Flag)),
+        assert(state(NextPlayer,UpdatedBoard)),
+        checkVictory(UpdatedBoard,Flag),
+    display_game(UpdatedBoard, 0),
+    endGame.
+
+play('P1', 'B2'):-
+    initial(InitialBoard),
+    assert(state(1,InitialBoard)),
+    repeat,
+        retract(state(Player,Board)),
+        once(display_game(Board, Player)),
+        (
+            Player =:= 2 -> PCFlag is 2; PCFlag is 0
+        ),
+        once(playMove(Player,NextPlayer,Board,UpdatedBoard,PCFlag, Flag)),
+        assert(state(NextPlayer,UpdatedBoard)),
+        checkVictory(UpdatedBoard,Flag),
+    display_game(UpdatedBoard, 0),
+    endGame.
+
+play('P1', 'B1'):-
     initial(InitialBoard),
     assert(state(1,InitialBoard)),
     repeat,
@@ -69,6 +126,25 @@ manageInput(_):-
 
 playMove(Player, NextPlayer, Board, NewBoard, 1, Flag):-
     decideMove(CRow, CCol, Board),
+    (   Player =:= 1 -> 
+        replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard)
+    ;   Player =:= 2 ->
+        replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard)
+    ),
+    once(repulsions(TempBoard, NewBoard, CRow, CCol)),
+    Flag is 0,
+    (
+		(Player =:= 1 ->
+		    NextPlayer is 2
+		);
+
+		(Player =:= 2 ->
+			NextPlayer is 1
+		)
+	).
+
+playMove(Player, NextPlayer, Board, NewBoard, 2, Flag):-
+    findBestMove(Player, Board, CRow, CCol),
     (   Player =:= 1 -> 
         replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard)
     ;   Player =:= 2 ->

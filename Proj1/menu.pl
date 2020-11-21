@@ -35,13 +35,35 @@ selectOption:-
     read(Option), nl,
     manageOption(Option).
 
+selectDiff(BotStr):-
+    write('Option: '),
+    read(Option3), nl,
+    manageDiff(Option3, BotStr).
+
+manageDiff(1, BotStr):- BotStr = 'B1'.
+
+manageDiff(2, BotStr):- BotStr = 'B2'.
+
+manageDiff(_,BotStr):-
+    write('Wrong option, choose a number from 1 to 2.'),nl,
+    selectDiff(BotStr).
+
+
 manageOption(0):- write('Exiting...\n').
 
 manageOption(1):- play('P1', 'P2').
 
-manageOption(2):- play('P1', 'PC1').
+manageOption(2):- 
+    write('PC1 Difficulty: [1] Easy    [2] Hard\n Option: '),
+    selectDiff(BotStr),
+    play('P1', BotStr).
 
-manageOption(3):- play('PC1', 'PC2').
+manageOption(3):- 
+    write('PC1 Difficulty: [1] Easy    [2] Hard\n'),
+    selectDiff(BotStr),
+    write('PC2 Difficulty: [1] Easy    [2] Hard\n'),
+    selectDiff(BotStr2),
+    play(BotStr, BotStr2).
 
 manageOption(_):-
     write('Wrong option, choose a number from 0 to 3.'),nl,
