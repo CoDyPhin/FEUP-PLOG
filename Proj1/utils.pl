@@ -240,7 +240,7 @@ twoInCol(Counter,Row,Col,Board,Value, CurrentP, Points):-
 	twoInCol(NCounter,NewRow,Col,Board,Value, NewCurrentP, Points).
 
 
-twoInRDiag(_,_,_,1,1,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
+/*twoInRDiag(_,_,_,1,1,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
 
 twoInRDiag(Counter,0,_,RowCounter,1,Board, Value, CurrentPoints, FinalPoints):- 
 	NewRCounter is RowCounter-1,
@@ -297,7 +297,49 @@ twoInLDiag(Counter,Row,Col,RowCounter, ColCounter, Board,Value, CurrentP, Points
 	),
 	NewCol is Col+1,
 	NewRow is Row-1,
-	twoInLDiag(NCounter,NewRow,NewCol,RowCounter,ColCounter,Board,Value, NewCurrentP, Points).
+	twoInLDiag(NCounter,NewRow,NewCol,RowCounter,ColCounter,Board,Value, NewCurrentP, Points).*/
+
+twoInRDiag(5,6,_,_, Points, FinalPoints):-
+	FinalPoints = Points.
+
+
+twoInRDiag(Row, Col, Board, Value, Points, FinalPoints):-
+	Row < 6,
+	Col < 6,
+	NewRow is Row + 1,
+	NewCol is Col + 1,
+	getValueFromMatrix(Board, Row, Col,V1),
+	getValueFromMatrix(Board, NewRow, NewCol, V2),
+	((V1 == Value, V2 == Value) -> (NewPoints is Points+1, twoInRDiag(Row, NewCol, Board, Value, NewPoints, FinalPoints)) ; twoInRDiag(Row, NewCol, Board, Value, Points, FinalPoints)).
+
+
+
+twoInRDiag(Row, Col, Board, Value, Points, FinalPoints):-
+	Col >= 6,
+	Row < 6,
+	NewRow is Row + 1,
+	twoInRDiag(NewRow, 1, Board, Value, Points, FinalPoints).
+
+
+twoInLDiag(2, 6,_,_, Points, FinalPoints):-
+	FinalPoints = Points.
+
+
+twoInLDiag(Row, Col, Board, Value, Points, FinalPoints):-
+	Col < 6,
+	Row > 1,
+	NewRow is Row - 1,
+	NewCol is Col + 1,
+	getValueFromMatrix(Board, Row, Col,V1),
+	getValueFromMatrix(Board, NewRow, NewCol, V2),
+	((V1 == Value, V2 == Value) -> (NewPoints is Points+1, twoInLDiag(Row, NewCol, Board, Value, NewPoints, FinalPoints)) ; twoInLDiag(Row, NewCol, Board, Value, Points, FinalPoints)).
+
+
+twoInLDiag(Row, Col, Board, Value, Points, FinalPoints):-
+	Col >= 6,
+	Row > 1,
+	NewRow is Row-1,
+	twoInLDiag(NewRow, 1, Board, Value, Points, FinalPoints).
 
 
 twoInRow(_,0,0,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
@@ -320,6 +362,16 @@ twoInRow(Counter,Row,Col,Board,Value, CurrentP, Points):-
 directionalPoints(Board, Value, Points):-
 	twoInRow(0, 6, 6, Board, Value, 0, PointsR),
 	twoInCol(0, 6, 6, Board, Value, 0, PointsC),
-	twoInRDiag(0, 6, 6, 6, 6, Board, Value, 0, PointsRD),
-	twoInLDiag(0, 6, 1, 6, 1, Board, Value, 0, PointsLD),
+	twoInRDiag(1, 1, Board, Value, 0, PointsRD),
+	twoInLDiag(6, 1, Board, Value, 0, PointsLD),
 	!,Points is PointsR+PointsC+PointsRD+PointsLD.
+
+testWinMove(Value, CRow, CCol, Board, NewBoard):-
+	incrementPos(1,1,CRow,CCol),
+    verifyWinMove(Value, CRow, CCol, Board, NewBoard).
+
+verifyWinMove(Value, Row, Col, Board, NewBoard):-
+    getValueFromMatrix(Board, Row, Col, empty),
+    replaceInMatrix(Board, Row, Col, Value, TempBoard),
+    repulsions(TempBoard, NewBoard, Row, Col),
+	checkAll(NewBoard, Value),!.
