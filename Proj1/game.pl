@@ -124,63 +124,47 @@ manageInput(_):-
     read(NewInput), 
     manageInput(NewInput).
 
-playMove(Player, NextPlayer, Board, NewBoard, 1, Flag):-
+playMove(2, 1, Board, NewBoard, 1, Flag):-
     decideMove(CRow, CCol, Board),
-    (   Player =:= 1 -> 
-        replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard)
-    ;   Player =:= 2 ->
-        replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard)
-    ),
+    replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard),
     once(repulsions(TempBoard, NewBoard, CRow, CCol)),
-    Flag is 0,
-    (
-		(Player =:= 1 ->
-		    NextPlayer is 2
-		);
+    Flag is 0.
 
-		(Player =:= 2 ->
-			NextPlayer is 1
-		)
-	).
-
-playMove(Player, NextPlayer, Board, NewBoard, 2, Flag):-
-    findBestMove(Player, Board, CRow, CCol),
-    (   Player =:= 1 -> 
-        replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard)
-    ;   Player =:= 2 ->
-        replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard)
-    ),
+playMove(1, 2, Board, NewBoard, 1, Flag):-
+    decideMove(CRow, CCol, Board),
+    replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard),
     once(repulsions(TempBoard, NewBoard, CRow, CCol)),
-    Flag is 0,
-    (
-		(Player =:= 1 ->
-		    NextPlayer is 2
-		);
+    Flag is 0.
 
-		(Player =:= 2 ->
-			NextPlayer is 1
-		)
-	).
-
-playMove(Player, NextPlayer, Board, NewBoard, 0, Flag):-
-    (readInput(Row1, Col1, CRow, CCol, Board) ->
-    (
-        (   Player =:= 1 -> 
-        replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard)
-    ;   Player =:= 2 ->
-        replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard)
-    ),
+playMove(1, 2, Board, NewBoard, 2, Flag):-
+    findBestMove(1, Board, CRow, CCol),
+    replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard),
     once(repulsions(TempBoard, NewBoard, CRow, CCol)),
-    Flag is 0,
+    Flag is 0.
+
+playMove(2, 1, Board, NewBoard, 2, Flag):-
+    findBestMove(2, Board, CRow, CCol),
+    replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard),
+    once(repulsions(TempBoard, NewBoard, CRow, CCol)),
+    Flag is 0.
+
+playMove(1, 2, Board, NewBoard, 0, Flag):-
     (
-	    (Player =:= 1 ->
-            NextPlayer is 2
-        );
-        (Player =:= 2 ->
-  		    NextPlayer is 1
-       	)
-    ), true
-    );(Flag is 1, NewBoard = Board, NextPlayer is Player, true)).
+        readInput(Row1, Col1, CRow, CCol, Board) ->
+        (replaceInMatrix(Board, CRow, CCol, plyr1, TempBoard),
+        once(repulsions(TempBoard, NewBoard, CRow, CCol)),
+        Flag is 0);
+        (Flag is 1, NewBoard = Board)
+    ).
+
+playMove(2, 1, Board, NewBoard, 0, Flag):-
+    (
+        readInput(Row1, Col1, CRow, CCol, Board) ->
+        (replaceInMatrix(Board, CRow, CCol, plyr2, TempBoard),
+        once(repulsions(TempBoard, NewBoard, CRow, CCol)),
+        Flag is 0);
+        (Flag is 1, NewBoard = Board)
+    ).
 
 threeInLDiag(0,_,_,_,_).
 

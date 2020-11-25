@@ -40,9 +40,9 @@ selectDiff(BotStr):-
     read(Option3), nl,
     manageDiff(Option3, BotStr).
 
-manageDiff(1, BotStr):- BotStr = 'B1'.
+manageDiff(1, 'B1').
 
-manageDiff(2, BotStr):- BotStr = 'B2'.
+manageDiff(2, 'B2').
 
 manageDiff(_,BotStr):-
     write('Wrong option, choose a number from 1 to 2.'),nl,
@@ -88,15 +88,15 @@ displayPMenu:-
 
 selectOption2(Return):-
     write('Option: '),
-    read(Option2), nl,
+    read(Option2), nl,!,
     manageOption2(Option2, Return).
 
 manageOption2(0, _):-
     abort.
 
-manageOption2(1, Return):- Return is 1.
+manageOption2(1, 1).
 
-manageOption2(2, Return):- Return is 2.
+manageOption2(2, 2).
 
 manageOption2(_,Return):-
     write('Wrong option, choose a number from 0 to 2.'),nl,

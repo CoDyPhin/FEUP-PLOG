@@ -25,10 +25,10 @@ finalBoard([
     [empty,empty,empty,empty,empty,plyr2]  
     ]).
  
-symbol(empty,S) :- S=' '.
-symbol(plyr1,S) :- S='X'.
-symbol(plyr2,S) :- S='O'.
-symbol(_S,S) :- S='S'.
+symbol(empty,' ').
+symbol(plyr1,'X').
+symbol(plyr2,'O').
+symbol(_S,'S').
 
 display_game(X, 0):-
     nl,

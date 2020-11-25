@@ -30,13 +30,9 @@ getValueFromMatrix(Board, Row, Col, Value) :-
     nth1(Col, NewRow, Value).
 
 
-checkUpLeftPiece(Board,NewBoard,1,_):-
-	NewBoard = Board.
+checkUpLeftPiece(Board,Board,1,_).
 
-
-checkUpLeftPiece(Board,NewBoard,_,1):-
-	NewBoard = Board.
-
+checkUpLeftPiece(Board,Board,_,1).
 
 checkUpLeftPiece(Board, NewBoard, Row, Column):-
 	Column > 2,
@@ -59,8 +55,7 @@ checkUpLeftPiece(Board, NewBoard, Row, Column):-
 	replaceInMatrix(Board, AuxRow, AuxCol, empty, NewBoard).
 
 
-checkUpPiece(Board, NewBoard, 1, _):-
-	NewBoard = Board.
+checkUpPiece(Board, Board, 1, _).
 
 checkUpPiece(Board, NewBoard, Row, Column):-
 	Row > 2,
@@ -78,12 +73,9 @@ checkUpPiece(Board, NewBoard, Row, Column):-
 	replaceInMatrix(Board, AuxRow, Column, empty, NewBoard).
 
 
-checkUpRightPiece(Board, NewBoard, 1, _):-
-	NewBoard = Board.
+checkUpRightPiece(Board, Board, 1, _).
 
-
-checkUpRightPiece(Board, NewBoard, _, 6):-
-	NewBoard = Board.
+checkUpRightPiece(Board, Board, _, 6).
 
 checkUpRightPiece(Board, NewBoard, Row, Column):-
 	Column < 5,
@@ -105,8 +97,7 @@ checkUpRightPiece(Board, NewBoard, Row, Column):-
 	AuxRow is Row - 1,
 	replaceInMatrix(Board, AuxRow, AuxCol, empty, NewBoard).
 
-checkRightPiece(Board, NewBoard, _, 6):-
-	NewBoard = Board.
+checkRightPiece(Board, Board, _, 6).
 
 checkRightPiece(Board, NewBoard, Row, Column):-
 	Column < 5,
@@ -124,11 +115,9 @@ checkRightPiece(Board, NewBoard, Row, Column):-
 	replaceInMatrix(Board, Row, AuxCol, empty, NewBoard).
     
 
-checkDownRightPiece(Board, NewBoard, 6, _):-
-	NewBoard = Board.
+checkDownRightPiece(Board, Board, 6, _).
 
-checkDownRightPiece(Board, NewBoard, _, 6):-
-	NewBoard = Board.
+checkDownRightPiece(Board, Board, _, 6).
 
 checkDownRightPiece(Board, NewBoard, Row, Column):-
 	Column < 5,
@@ -150,8 +139,7 @@ checkDownRightPiece(Board, NewBoard, Row, Column):-
 	AuxRow is Row + 1,
 	replaceInMatrix(Board, AuxRow, AuxCol, empty, NewBoard).
 
-checkDownPiece(Board, NewBoard, 6, _):-
-	NewBoard = Board.
+checkDownPiece(Board, Board, 6, _).
 
 checkDownPiece(Board, NewBoard, Row, Column):-
 	Row < 5,
@@ -168,11 +156,9 @@ checkDownPiece(Board, NewBoard, Row, Column):-
 	AuxRow is Row + 1,
 	replaceInMatrix(Board, AuxRow, Column, empty, NewBoard).
 
-checkDownLeftPiece(Board, NewBoard, 6, _):-
-	NewBoard = Board.
+checkDownLeftPiece(Board, Board, 6, _).
 
-checkDownLeftPiece(Board, NewBoard, _, 1):-
-	NewBoard = Board.
+checkDownLeftPiece(Board, Board, _, 1).
 
 checkDownLeftPiece(Board, NewBoard, Row, Column):-
 	Column > 2,
@@ -194,8 +180,7 @@ checkDownLeftPiece(Board, NewBoard, Row, Column):-
 	AuxRow is Row + 1,
 	replaceInMatrix(Board, AuxRow, AuxCol, empty, NewBoard).
 
-checkLeftPiece(Board, NewBoard, _, 1):-
-	NewBoard = Board.
+checkLeftPiece(Board, Board, _, 1).
 
 checkLeftPiece(Board, NewBoard, Row, Column):-
 	Column > 2,
@@ -213,7 +198,7 @@ checkLeftPiece(Board, NewBoard, Row, Column):-
 	replaceInMatrix(Board, Row, AuxCol, empty, NewBoard).
      
 
-piecesOnBoard(_,37,_,Counter,Points):- Points is Counter.
+piecesOnBoard(_,37,_,Counter,Counter).
 
 piecesOnBoard(Board, Index, Value, Counter, Points):-
     NewI is Index+1,
@@ -222,7 +207,7 @@ piecesOnBoard(Board, Index, Value, Counter, Points):-
     ),
     piecesOnBoard(Board, NewI, Value, NewC, Points),!.
 
-twoInCol(_,0,0,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
+twoInCol(_,0,0,_,_,CurrentPoints, CurrentPoints).
 
 twoInCol(Counter,0,Col,Board, Value, CurrentPoints, FinalPoints):- 
 	NewCol is Col-1,
@@ -240,68 +225,7 @@ twoInCol(Counter,Row,Col,Board,Value, CurrentP, Points):-
 	twoInCol(NCounter,NewRow,Col,Board,Value, NewCurrentP, Points).
 
 
-/*twoInRDiag(_,_,_,1,1,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
-
-twoInRDiag(Counter,0,_,RowCounter,1,Board, Value, CurrentPoints, FinalPoints):- 
-	NewRCounter is RowCounter-1,
-	NewRow is RowCounter,
-	twoInRDiag(0, NewRow, 6,NewRCounter,1, Board, Value, CurrentPoints, FinalPoints).
-
-twoInRDiag(Counter,_,_,6,1,Board, Value, CurrentPoints, FinalPoints):- 
-	NewRCounter is RowCounter-1,
-	NewRow is RowCounter,
-	twoInRDiag(0, NewRow, 6,NewRCounter,1, Board, Value, CurrentPoints, FinalPoints).
-
-twoInRDiag(Counter,_,0,6,ColCounter,Board, Value, CurrentPoints, FinalPoints):- 
-	NewCCounter is ColCounter-1,
-	NewCol is ColCounter,
-	twoInRDiag(0, 6, NewCol,RowCounter,NewCCounter, Board, Value, CurrentPoints, FinalPoints).
-
-twoInRDiag(Counter,Row,Col,RowCounter, ColCounter, Board,Value, CurrentP, Points):-
-	(
-		Counter =:= 2 -> (NewCounter is 0, NewCurrentP is CurrentP+1); 
-		(NewCounter is Counter, NewCurrentP is CurrentP)
-	),
-    (
-		getValueFromMatrix(Board,Row,Col,Value) -> NCounter is NewCounter+1; NCounter is 0
-	),
-	NewCol is Col-1,
-	NewRow is Row-1,
-	twoInRDiag(NCounter,NewRow,NewCol,RowCounter,ColCounter,Board,Value, NewCurrentP, Points).
-
-
-twoInLDiag(_,_,_,1,6,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
-
-twoInLDiag(Counter,0,_,RowCounter,6,Board, Value, CurrentPoints, FinalPoints):- 
-	NewRCounter is RowCounter-1,
-	NewRow is RowCounter,
-	twoInLDiag(0, NewRow, 1,NewRCounter,6, Board, Value, CurrentPoints, FinalPoints).
-
-twoInLDiag(Counter,_,_,6,6,Board, Value, CurrentPoints, FinalPoints):- 
-	NewRCounter is RowCounter-1,
-	NewRow is RowCounter,
-	twoInLDiag(0, NewRow, 1,NewRCounter,6, Board, Value, CurrentPoints, FinalPoints).
-
-twoInLDiag(Counter,_,7,6,ColCounter,Board, Value, CurrentPoints, FinalPoints):- 
-	NewCCounter is ColCounter+1,
-	NewCol is ColCounter,
-	twoInLDiag(0, 6, NewCol,RowCounter,NewCCounter, Board, Value, CurrentPoints, FinalPoints).
-
-twoInLDiag(Counter,Row,Col,RowCounter, ColCounter, Board,Value, CurrentP, Points):-
-	(
-		Counter =:= 2 -> (NewCounter is 0, NewCurrentP is CurrentP+1); 
-		(NewCounter is Counter, NewCurrentP is CurrentP)
-	),
-    (
-		getValueFromMatrix(Board,Row,Col,Value) -> NCounter is NewCounter+1; NCounter is 0
-	),
-	NewCol is Col+1,
-	NewRow is Row-1,
-	twoInLDiag(NCounter,NewRow,NewCol,RowCounter,ColCounter,Board,Value, NewCurrentP, Points).*/
-
-twoInRDiag(5,6,_,_, Points, FinalPoints):-
-	FinalPoints = Points.
-
+twoInRDiag(5,6,_,_, Points, Points).
 
 twoInRDiag(Row, Col, Board, Value, Points, FinalPoints):-
 	Row < 6,
@@ -321,8 +245,7 @@ twoInRDiag(Row, Col, Board, Value, Points, FinalPoints):-
 	twoInRDiag(NewRow, 1, Board, Value, Points, FinalPoints).
 
 
-twoInLDiag(2, 6,_,_, Points, FinalPoints):-
-	FinalPoints = Points.
+twoInLDiag(2, 6,_,_, Points, Points).
 
 
 twoInLDiag(Row, Col, Board, Value, Points, FinalPoints):-
