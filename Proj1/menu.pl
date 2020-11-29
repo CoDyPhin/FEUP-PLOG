@@ -58,7 +58,7 @@ manageOption(0):- write('Exiting...\n').
 manageOption(1):- playGame('P1', 'P2').
 
 manageOption(2):- 
-    write('PC1 Difficulty: [1] Easy    [2] Hard\n Option: '),
+    write('PC1 Difficulty: [1] Easy    [2] Hard\n'),
     selectDiff(BotStr),
     playGame('P1', BotStr).
 
