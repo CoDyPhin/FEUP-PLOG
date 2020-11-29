@@ -7,5 +7,5 @@
 :-use_module(library(random)).
 :-use_module(library(lists)).
 
-gekitai :-
+play :-
     mainMenu.

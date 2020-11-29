@@ -209,7 +209,7 @@ piecesOnBoard(Board, Index, Value, Counter, Points):-
 
 twoInCol(_,0,0,_,_,CurrentPoints, CurrentPoints).
 
-twoInCol(Counter,0,Col,Board, Value, CurrentPoints, FinalPoints):- 
+twoInCol(_,0,Col,Board, Value, CurrentPoints, FinalPoints):- 
 	NewCol is Col-1,
 	twoInCol(0, 6, NewCol, Board, Value, CurrentPoints, FinalPoints).
 
@@ -267,7 +267,7 @@ twoInLDiag(Row, Col, Board, Value, Points, FinalPoints):-
 
 twoInRow(_,0,0,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
 
-twoInRow(Counter,Row,0,Board, Value, CurrentPoints, FinalPoints):- 
+twoInRow(_,Row,0,Board, Value, CurrentPoints, FinalPoints):- 
 	NewRow is Row-1,
 	twoInRow(0, NewRow, 6, Board, Value, CurrentPoints, FinalPoints).
 

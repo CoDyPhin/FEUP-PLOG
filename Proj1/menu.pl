@@ -51,19 +51,19 @@ manageDiff(_,BotStr):-
 
 manageOption(0):- write('Exiting...\n').
 
-manageOption(1):- play('P1', 'P2').
+manageOption(1):- playGame('P1', 'P2').
 
 manageOption(2):- 
     write('PC1 Difficulty: [1] Easy    [2] Hard\n Option: '),
     selectDiff(BotStr),
-    play('P1', BotStr).
+    playGame('P1', BotStr).
 
 manageOption(3):- 
     write('PC1 Difficulty: [1] Easy    [2] Hard\n'),
     selectDiff(BotStr),
     write('PC2 Difficulty: [1] Easy    [2] Hard\n'),
     selectDiff(BotStr2),
-    play(BotStr, BotStr2).
+    playGame(BotStr, BotStr2).
 
 manageOption(_):-
     write('Wrong option, choose a number from 0 to 3.'),nl,
