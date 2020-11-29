@@ -54,7 +54,7 @@ playGame('B2', 'B1'):-
         once(playMove(Player,NextPlayer,Board,UpdatedBoard,PCFlag, Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
         checkVictory(UpdatedBoard,Winner,Flag),
-    endGame(Winner).
+    endGame(Winner, UpdatedBoard).
 
 playGame('B2', 'B2'):-
     initial(InitialBoard),

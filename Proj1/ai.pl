@@ -45,7 +45,8 @@ value(GameState, Player, Value):-
     directionalPoints(GameState, OpPiece, Points5),
     directionalPoints(GameState, Piece, Points6),
     ( (Points3 > 2, Points1 < 100, Points2 < 100) -> ( testWinMove(OpPiece, _, _, GameState, _) -> Points7 is 100; Points7 is 0); Points7 is 0),
-    Value is Points1-Points2-(2*Points3)+Points4-(20*Points5)+(5*Points6)-Points7,
+    Value is Points1-Points2-(2*Points3)+Points4-(20*Points5)+(5*Points6)-Points7.
+
 iterateMoveList([],NewEvaluatedMatrix,_,NewEvaluatedMatrix).
 
 iterateMoveList([H|T], EvaluatedMatrix, 2, FinalMatrix):-
