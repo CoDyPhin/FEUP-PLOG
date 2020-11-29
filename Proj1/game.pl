@@ -15,8 +15,7 @@ playGame('P1','P2'):-
         once(playMove(Player,NextPlayer,Board,UpdatedBoard,0, Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
         checkVictory(UpdatedBoard,Winner, Flag),
-    display_game(UpdatedBoard, 0), 
-    endGame(Winner).
+    endGame(Winner, UpdatedBoard).
     
 playGame('B1', 'B1'):-
     initial(InitialBoard),
@@ -27,8 +26,7 @@ playGame('B1', 'B1'):-
         once(playMove(Player,NextPlayer,Board,UpdatedBoard,1,Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
         checkVictory(UpdatedBoard,Winner,Flag),
-    display_game(UpdatedBoard, 0),
-    endGame(Winner).
+    endGame(Winner, UpdatedBoard).
 
 playGame('B1', 'B2'):-
     initial(InitialBoard),
@@ -42,8 +40,7 @@ playGame('B1', 'B2'):-
         once(playMove(Player,NextPlayer,Board,UpdatedBoard,PCFlag, Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
         checkVictory(UpdatedBoard,Winner,Flag),
-    display_game(UpdatedBoard, 0),
-    endGame(Winner).
+    endGame(Winner, UpdatedBoard).
 
 playGame('B2', 'B1'):-
     initial(InitialBoard),
@@ -57,7 +54,6 @@ playGame('B2', 'B1'):-
         once(playMove(Player,NextPlayer,Board,UpdatedBoard,PCFlag, Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
         checkVictory(UpdatedBoard,Winner,Flag),
-    display_game(UpdatedBoard, 0),
     endGame(Winner).
 
 playGame('B2', 'B2'):-
@@ -69,8 +65,7 @@ playGame('B2', 'B2'):-
         once(playMove(Player,NextPlayer,Board,UpdatedBoard,2, Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
         checkVictory(UpdatedBoard,Winner,Flag),
-    display_game(UpdatedBoard, 0),
-    endGame(Winner).
+    endGame(Winner, UpdatedBoard).
 
 playGame('P1', 'B2'):-
     initial(InitialBoard),
@@ -84,8 +79,7 @@ playGame('P1', 'B2'):-
         once(playMove(Player,NextPlayer,Board,UpdatedBoard,PCFlag, Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
         checkVictory(UpdatedBoard,Winner,Flag),
-    display_game(UpdatedBoard, 0),
-    endGame(Winner).
+    endGame(Winner, UpdatedBoard).
 
 playGame('P1', 'B1'):-
     initial(InitialBoard),
@@ -99,13 +93,12 @@ playGame('P1', 'B1'):-
         once(playMove(Player,NextPlayer,Board,UpdatedBoard,PCFlag, Flag)),
         assert(state(NextPlayer,UpdatedBoard)),
         checkVictory(UpdatedBoard, Winner,Flag),
-    display_game(UpdatedBoard, 0), 
-    endGame(Winner).
+    endGame(Winner, UpdatedBoard).
 
-endGame(Winner):-
+endGame(Winner, FinalBoard):-
     retract(state(_,_)),
     (
-        Winner =:= 0 -> mainMenu; (write('Player '), write(Winner), write(' wins the game!\n'), checkMMenuInput)
+        Winner =:= 0 -> mainMenu; (display_game(FinalBoard, 0), write('Player '), write(Winner), write(' wins the game!\n'), checkMMenuInput)
     ).
 
 checkMMenuInput:-

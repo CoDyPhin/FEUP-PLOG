@@ -15,7 +15,7 @@ readInput(NewRow, NewCol, ConfirmedR, ConfirmedC, Board):-
 readRow(R1, NewRow):-
     write('Row:\n'),
     read(R1),
-    checkRow(R1, NewRow).
+    !,checkRow(R1, NewRow).
 
 checkRow(1, 1).
 
@@ -57,15 +57,15 @@ checkRow(p, NewRow):-
     ).
 
 
-checkRow(_, NewRow) :-
-    write('Invalid Row!\nSelect again:\n'),
-    readRow(_, NewRow).
+checkRow(Input, NewRow) :-
+    ((Input \= p, Input \= 'P', Input \= 'pause') -> (write('Invalid Row!\nSelect again:\n'),
+    readRow(_, NewRow));fail).
 
 
 readColumn(C1, NewCol):-
     write('Column:\n'),
     read(C1),
-    checkColumn(C1, NewCol).
+    !,checkColumn(C1, NewCol).
 
 checkColumn('A', 1).
 
@@ -118,6 +118,6 @@ checkColumn(p, NewCol):-
         Return =:= 2 -> (!,fail); true
     ).
 
-checkColumn(_, NewCol) :-
-    write('Invalid Column!\nSelect again:\n'),
-    readColumn(_, NewCol).
+checkColumn(Input, NewCol) :-
+    ((Input \= p, Input \= 'P', Input \= 'pause') -> (write('Invalid Column!\nSelect again:\n'),
+    readColumn(_, NewCol));fail).

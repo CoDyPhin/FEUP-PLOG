@@ -89,7 +89,7 @@ displayPMenu:-
 selectOption2(Return):-
     write('Option: '),
     read(Option2), nl,!,
-    manageOption2(Option2, Return).
+    manageOption2(Option2, Return),!.
 
 manageOption2(0, _):-
     abort.
@@ -98,7 +98,7 @@ manageOption2(1, 1).
 
 manageOption2(2, 2).
 
-manageOption2(_,Return):-
-    write('Wrong option, choose a number from 0 to 2.'),nl,
-    selectOption2(Return).
+manageOption2(Input,Return):-
+    ((Input \= 1, Input \= 2) -> (write('Wrong option, choose a number from 0 to 2.'),nl,
+    selectOption2(Return)); true).
  
