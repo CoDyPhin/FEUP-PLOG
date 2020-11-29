@@ -1,8 +1,10 @@
+% Main Menu
+
 mainMenu:-
     displayMMenu,
     selectOption.
 
-
+% Main Menu Display
 displayMMenu:-
     char_code(X, 256),
     nl,
@@ -30,6 +32,7 @@ displayMMenu:-
     write('|                                                               |\n'),
     write('|_______________________________________________________________|\n').
 
+% Main Menu Option Handler
 selectOption:-
     write('Option: '),
     read(Option), nl,
@@ -39,6 +42,7 @@ selectDiff(BotStr):-
     write('Option: '),
     read(Option3), nl,
     manageDiff(Option3, BotStr).
+
 
 manageDiff(1, 'B1').
 
@@ -69,11 +73,12 @@ manageOption(_):-
     write('Wrong option, choose a number from 0 to 3.'),nl,
     selectOption.
 
-
+% Pause Menu
 pauseMenu(Return):-
     displayPMenu,
     selectOption2(Return).
 
+% Pause Menu Display
 displayPMenu:-
     write('_________________________________________________________________\n'),
     write('|                                                               |\n'),
@@ -86,6 +91,7 @@ displayPMenu:-
     write('|                                                               |\n'),
     write('|_______________________________________________________________|\n').
 
+% Pause Menu Options Handler
 selectOption2(Return):-
     write('Option: '),
     read(Option2), nl,!,
@@ -102,3 +108,17 @@ manageOption2(Input,Return):-
     ((Input \= 1, Input \= 2) -> (write('Wrong option, choose a number from 0 to 2.'),nl,
     selectOption2(Return)); true).
  
+% Return to Main Menu Option Handler
+checkMMenuInput:-
+    write('Return to main menu? [0] No    [1] Yes\n'),
+    read(Input),
+    manageInput(Input).
+
+manageInput(0):- write('Exiting...\n').
+
+manageInput(1):- mainMenu.
+
+manageInput(_):- 
+    write('Wrong option!\n Return to main menu? [0] No    [1] Yes\n'), 
+    read(NewInput), 
+    manageInput(NewInput).

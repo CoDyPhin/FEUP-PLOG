@@ -1,5 +1,6 @@
 % AI LEVEL 2
 
+% Set of predicates to iterate the possible moves, verify if they're valid and access the board afterwards
 incrementPos(IRow,ICol,CRow,CCol):- 
     CRow is IRow, 
     CCol is ICol.
@@ -31,6 +32,7 @@ testMove(Player, CRow, CCol, Board, NewBoard):-
     incrementPos(1,1,CRow,CCol),
     verifyMove(Player, CRow, CCol, Board, NewBoard).
 
+% Evaluation of a GameState for a Player
 value(GameState, Player, Value):-
     (Player =:= 1 -> (Piece = plyr1, OpPiece = plyr2); (Player =:= 2 -> (Piece = plyr2, OpPiece = plyr1);fail)),
     (
@@ -47,6 +49,7 @@ value(GameState, Player, Value):-
     ( (Points3 > 2, Points1 < 100, Points2 < 100) -> ( testWinMove(OpPiece, _, _, GameState, _) -> Points7 is 100; Points7 is 0); Points7 is 0),
     Value is Points1-Points2-(2*Points3)+Points4-(20*Points5)+(5*Points6)-Points7.
 
+% Iterates through a list of moves/boards and evaluates them
 iterateMoveList([],NewEvaluatedMatrix,_,NewEvaluatedMatrix).
 
 iterateMoveList([H|T], EvaluatedMatrix, 2, FinalMatrix):-
@@ -65,6 +68,7 @@ iterateMoveList([H|T], EvaluatedMatrix, 1, FinalMatrix):-
     append(EvaluatedMatrix, [[Row,Col,Points]],NewEvaluatedMatrix),
     iterateMoveList(T,NewEvaluatedMatrix,1,FinalMatrix).
 
+% Selects the moves that have the highest evaluated board
 selectBestMoves(_,BMList,[],BMList).
 
 selectBestMoves(BMPoints, BMList, [H|T], BestMoves):-
@@ -79,6 +83,7 @@ selectBestMoves(BMPoints, BMList, [H|T], BestMoves):-
         )
     ).
 
+% Finds a list of Valid Moves, including the board after that move
 valid_moves(GameState, Player, ListOfMoves):-
     findall([CRow, CCol, NewBoard], testMove(Player, CRow, CCol, GameState, NewBoard), ListOfMoves).
 

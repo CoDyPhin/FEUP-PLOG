@@ -1,3 +1,5 @@
+% GameStates (Delivery 1)
+% Initial State
 initialBoard([
     [empty,empty,empty,empty,empty,empty],
     [empty,empty,empty,empty,empty,empty],
@@ -7,6 +9,7 @@ initialBoard([
     [empty,empty,empty,empty,empty,empty]
     ]).
 
+% Random Mid State
 midBoard([
     [empty,empty,plyr1,empty,plyr1,empty],  
     [empty,empty,empty,empty,empty,empty],  
@@ -16,6 +19,7 @@ midBoard([
     [empty,empty,empty,empty,plyr2,empty]
     ]).
 
+% Random Final State
 finalBoard([
     [plyr1,empty,empty,plyr1,empty,empty],  
     [empty,empty,empty,empty,empty,empty],  
@@ -25,11 +29,13 @@ finalBoard([
     [empty,empty,empty,empty,empty,plyr2]  
     ]).
  
+% Printable symbols for each value of the matrix
 symbol(empty,' ').
 symbol(plyr1,'X').
 symbol(plyr2,'O').
 symbol(_S,'S').
 
+% Board Display
 display_game(X, 0):-
     nl,
     write('   | A | B | C | D | E | F |\n'),

@@ -1,6 +1,8 @@
+% Gets printable Column from Col number
 indexToCol(ColNum, ColString):-
 	nth1(ColNum, ['A','B','C','D','E','F'], ColString).
 
+% Flatten a list of lists
 flatten([], []) :- !.
 flatten([L|Ls], FlatL) :-
     !,
@@ -9,6 +11,7 @@ flatten([L|Ls], FlatL) :-
     append(NewL, NewLs, FlatL).
 flatten(L, [L]).
 
+% Plays the piece in the chosen position (changing the matrix value)
 replaceInList([_H|T], 1, Value, [Value|T]).
 replaceInList([H|T], Index, Value, [H|TNew]) :-
     Index > 1,
@@ -23,12 +26,14 @@ replaceInMatrix([H|T], Row, Column, Value, [H|TNew]) :-
     Row1 is Row - 1,
     replaceInMatrix(T, Row1, Column, Value, TNew).
 
+% Gets the Value in a given position of the matrix
 getValueFromMatrix(Board, Row, Col, Value) :-
     Row > 0,
     Col > 0,
     nth1(Row, Board, NewRow),
     nth1(Col, NewRow, Value).
 
+% REPULSIONS
 
 checkUpLeftPiece(Board,Board,1,_).
 
@@ -196,8 +201,22 @@ checkLeftPiece(Board, NewBoard, Row, Column):-
 	Column > 1,
 	AuxCol is Column - 1,
 	replaceInMatrix(Board, Row, AuxCol, empty, NewBoard).
-     
 
+
+repulsions(Board, NewBoard, Row, Column):-
+	checkUpLeftPiece(Board, AuxBoard1, Row, Column),
+	checkUpPiece(AuxBoard1, AuxBoard2, Row, Column),
+	checkUpRightPiece(AuxBoard2, AuxBoard3, Row, Column),
+	checkRightPiece(AuxBoard3, AuxBoard4, Row, Column),
+	checkDownRightPiece(AuxBoard4, AuxBoard5, Row, Column),
+	checkDownPiece(AuxBoard5, AuxBoard6, Row, Column),
+	checkDownLeftPiece(AuxBoard6, AuxBoard7, Row, Column),
+	checkLeftPiece(AuxBoard7, NewBoard, Row, Column),
+	!.
+     
+% BOARD EVALUATION PREDICATES
+
+% Counts how many pieces are on board
 piecesOnBoard(_,37,_,Counter,Counter).
 
 piecesOnBoard(Board, Index, Value, Counter, Points):-
@@ -207,6 +226,7 @@ piecesOnBoard(Board, Index, Value, Counter, Points):-
     ),
     piecesOnBoard(Board, NewI, Value, NewC, Points),!.
 
+% Counts how many vertical two in a rows are on board
 twoInCol(_,0,0,_,_,CurrentPoints, CurrentPoints).
 
 twoInCol(_,0,Col,Board, Value, CurrentPoints, FinalPoints):- 
@@ -224,7 +244,7 @@ twoInCol(Counter,Row,Col,Board,Value, CurrentP, Points):-
 	NewRow is Row-1,
 	twoInCol(NCounter,NewRow,Col,Board,Value, NewCurrentP, Points).
 
-
+% Counts how many right diagonal two in a rows are on board
 twoInRDiag(5,6,_,_, Points, Points).
 
 twoInRDiag(Row, Col, Board, Value, Points, FinalPoints):-
@@ -236,17 +256,14 @@ twoInRDiag(Row, Col, Board, Value, Points, FinalPoints):-
 	getValueFromMatrix(Board, NewRow, NewCol, V2),
 	((V1 == Value, V2 == Value) -> (NewPoints is Points+1, twoInRDiag(Row, NewCol, Board, Value, NewPoints, FinalPoints)) ; twoInRDiag(Row, NewCol, Board, Value, Points, FinalPoints)).
 
-
-
 twoInRDiag(Row, Col, Board, Value, Points, FinalPoints):-
 	Col >= 6,
 	Row < 6,
 	NewRow is Row + 1,
 	twoInRDiag(NewRow, 1, Board, Value, Points, FinalPoints).
 
-
+% Counts how many left diagonal two in a rows are on board
 twoInLDiag(2, 6,_,_, Points, Points).
-
 
 twoInLDiag(Row, Col, Board, Value, Points, FinalPoints):-
 	Col < 6,
@@ -257,14 +274,13 @@ twoInLDiag(Row, Col, Board, Value, Points, FinalPoints):-
 	getValueFromMatrix(Board, NewRow, NewCol, V2),
 	((V1 == Value, V2 == Value) -> (NewPoints is Points+1, twoInLDiag(Row, NewCol, Board, Value, NewPoints, FinalPoints)) ; twoInLDiag(Row, NewCol, Board, Value, Points, FinalPoints)).
 
-
 twoInLDiag(Row, Col, Board, Value, Points, FinalPoints):-
 	Col >= 6,
 	Row > 1,
 	NewRow is Row-1,
 	twoInLDiag(NewRow, 1, Board, Value, Points, FinalPoints).
 
-
+% Counts how many horizontal two in a rows are on board
 twoInRow(_,0,0,_,_,CurrentPoints, FinalPoints):- FinalPoints = CurrentPoints.
 
 twoInRow(_,Row,0,Board, Value, CurrentPoints, FinalPoints):- 
@@ -282,6 +298,7 @@ twoInRow(Counter,Row,Col,Board,Value, CurrentP, Points):-
 	NewCol is Col-1,
 	twoInRow(NCounter,Row,NewCol,Board,Value, NewCurrentP, Points).
 
+% Counts how many two in a rows are on board in all directions
 directionalPoints(Board, Value, Points):-
 	twoInRow(0, 6, 6, Board, Value, 0, PointsR),
 	twoInCol(0, 6, 6, Board, Value, 0, PointsC),
@@ -289,6 +306,7 @@ directionalPoints(Board, Value, Points):-
 	twoInLDiag(6, 1, Board, Value, 0, PointsLD),
 	!,Points is PointsR+PointsC+PointsRD+PointsLD.
 
+% Finds winning moves
 testWinMove(Value, CRow, CCol, Board, NewBoard):-
 	incrementPos(1,1,CRow,CCol),
     verifyWinMove(Value, CRow, CCol, Board, NewBoard).

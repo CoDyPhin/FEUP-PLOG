@@ -1,3 +1,5 @@
+% Input reading and checking
+
 readInput(NewRow, NewCol, ConfirmedR, ConfirmedC, Board):-
     (
         readColumn(_, NewCol) -> true; (!,fail)
@@ -12,6 +14,7 @@ readInput(NewRow, NewCol, ConfirmedR, ConfirmedC, Board):-
             readInput(_, _, ConfirmedR, ConfirmedC, Board))
     ).
 
+% Row reading and checking
 readRow(R1, NewRow):-
     write('Row:\n'),
     read(R1),
@@ -29,6 +32,7 @@ checkRow(5, 5).
 
 checkRow(6, 6).
 
+% Special cases for the pause menu
 checkRow('pause', NewRow):-
     pauseMenu(Return),
     (
@@ -56,12 +60,12 @@ checkRow(p, NewRow):-
         Return =:= 2 -> (!,fail); true
     ).
 
-
+% Invalid Row that is not pause
 checkRow(Input, NewRow) :-
     ((Input \= p, Input \= 'P', Input \= 'pause') -> (write('Invalid Row!\nSelect again:\n'),
     readRow(_, NewRow));fail).
 
-
+% Column reading and checking
 readColumn(C1, NewCol):-
     write('Column:\n'),
     read(C1),
@@ -91,6 +95,7 @@ checkColumn(e, 5).
 
 checkColumn(f, 6).
 
+% Special cases for pause menu
 checkColumn('pause', NewCol):-
     pauseMenu(Return),
     (
@@ -118,6 +123,7 @@ checkColumn(p, NewCol):-
         Return =:= 2 -> (!,fail); true
     ).
 
+% Invalid Column that is not pause
 checkColumn(Input, NewCol) :-
     ((Input \= p, Input \= 'P', Input \= 'pause') -> (write('Invalid Column!\nSelect again:\n'),
     readColumn(_, NewCol));fail).

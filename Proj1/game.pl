@@ -1,11 +1,16 @@
 :-dynamic(state/2).
 
+% Defines the initial state of the board
 initial(GameState) :-
     initialBoard(GameState).
 
+% Repeat
 repeat.
 repeat:-repeat.
 
+% GAME LOOP PREDICATES
+
+% Player vs Player loop
 playGame('P1','P2'):-
     initial(InitialBoard),
     assert(state(1,InitialBoard)),
@@ -16,7 +21,8 @@ playGame('P1','P2'):-
         assert(state(NextPlayer,UpdatedBoard)),
         checkVictory(UpdatedBoard,Winner, Flag),
     endGame(Winner, UpdatedBoard).
-    
+
+% Level 1 AI vs Level 1 AI loop
 playGame('B1', 'B1'):-
     initial(InitialBoard),
     assert(state(1,InitialBoard)),
@@ -28,6 +34,7 @@ playGame('B1', 'B1'):-
         checkVictory(UpdatedBoard,Winner,Flag),
     endGame(Winner, UpdatedBoard).
 
+% Level 1 AI vs Level 2 AI loop
 playGame('B1', 'B2'):-
     initial(InitialBoard),
     assert(state(1,InitialBoard)),
@@ -42,6 +49,7 @@ playGame('B1', 'B2'):-
         checkVictory(UpdatedBoard,Winner,Flag),
     endGame(Winner, UpdatedBoard).
 
+% Level 2 AI vs Level 1 AI loop
 playGame('B2', 'B1'):-
     initial(InitialBoard),
     assert(state(1,InitialBoard)),
@@ -56,6 +64,7 @@ playGame('B2', 'B1'):-
         checkVictory(UpdatedBoard,Winner,Flag),
     endGame(Winner, UpdatedBoard).
 
+% Level 2 AI vs Level 2 AI loop
 playGame('B2', 'B2'):-
     initial(InitialBoard),
     assert(state(1,InitialBoard)),
@@ -67,6 +76,7 @@ playGame('B2', 'B2'):-
         checkVictory(UpdatedBoard,Winner,Flag),
     endGame(Winner, UpdatedBoard).
 
+% Player 1 vs Level 2 AI loop
 playGame('P1', 'B2'):-
     initial(InitialBoard),
     assert(state(1,InitialBoard)),
@@ -81,6 +91,7 @@ playGame('P1', 'B2'):-
         checkVictory(UpdatedBoard,Winner,Flag),
     endGame(Winner, UpdatedBoard).
 
+% Player 1 vs Level 1 AI loop
 playGame('P1', 'B1'):-
     initial(InitialBoard),
     assert(state(1,InitialBoard)),
@@ -95,26 +106,14 @@ playGame('P1', 'B1'):-
         checkVictory(UpdatedBoard, Winner,Flag),
     endGame(Winner, UpdatedBoard).
 
+% Endgame handler
 endGame(Winner, FinalBoard):-
     retract(state(_,_)),
     (
         Winner =:= 0 -> mainMenu; (display_game(FinalBoard, 0), write('Player '), write(Winner), write(' wins the game!\n'), checkMMenuInput)
     ).
 
-checkMMenuInput:-
-    write('Return to main menu? [0] No    [1] Yes\n'),
-    read(Input),
-    manageInput(Input).
-
-manageInput(0):- write('Exiting...\n').
-
-manageInput(1):- mainMenu.
-
-manageInput(_):- 
-    write('Wrong option!\n Return to main menu? [0] No    [1] Yes\n'), 
-    read(NewInput), 
-    manageInput(NewInput).
-
+% Plays the given Move and applies repulsions
 move(GameState, Move, NewGameState):-
     nth1(1, Move, Row),
     nth1(2, Move, Col),
@@ -123,6 +122,7 @@ move(GameState, Move, NewGameState):-
     replaceInMatrix(GameState, Row, Col, PValue, TempState),
     once(repulsions(TempState, NewGameState, Row, Col)).
 
+% Chooses the move, verifies if it's valid and plays it, while also checking if Return to Main Menu option was given as input (irrelevant during AI vs AI games)
 playMove(2, 1, Board, NewBoard, 1, Flag):-
     choose_move(Board, 2, 1, Move),
     move(Board, Move, NewBoard),
@@ -159,6 +159,9 @@ playMove(2, 1, Board, NewBoard, 0, Flag):-
         (Flag is 1, NewBoard = Board)
     ).
 
+% VICTORY CHECKING
+
+% Checks if there are 3 in a row in the left diagonal
 threeInLDiag(0,_,_,_,_).
 
 threeInLDiag(Counter,Row,Col,Board,Value):-
@@ -170,6 +173,7 @@ threeInLDiag(Counter,Row,Col,Board,Value):-
     NewCounter is Counter-1,
     threeInLDiag(NewCounter,NewRow,NewCol,Board,Value),!.
 
+% Checks if there are 3 in a row in the right diagonal
 threeInRDiag(0,_,_,_,_).
 
 threeInRDiag(Counter,Row,Col,Board,Value):-
@@ -181,6 +185,7 @@ threeInRDiag(Counter,Row,Col,Board,Value):-
     NewCounter is Counter-1,
     threeInRDiag(NewCounter,NewRow,NewCol,Board,Value),!.
 
+% Checks if there are 3 in a row veritically
 threeInCol(0,_,_,_,_).
 
 threeInCol(Counter,Row,Col,Board,Value):-
@@ -191,6 +196,7 @@ threeInCol(Counter,Row,Col,Board,Value):-
     NewCounter is Counter-1,
     threeInCol(NewCounter,NewRow,Col,Board,Value),!.
 
+% Checks if there are 8 pieces on board
 eightOnBoard(_,_,_,0).
 eightOnBoard(Board, Index, Value, Counter):-
     Index < 37,
@@ -200,7 +206,7 @@ eightOnBoard(Board, Index, Value, Counter):-
     ),
     eightOnBoard(Board, NewI, Value, NewC),!.
 
-
+% Checks if there are 3 in a row veritically
 threeInRow(0,_,_,_,_).
 
 threeInRow(Counter,Row,Col,Board,Value):-
@@ -211,6 +217,7 @@ threeInRow(Counter,Row,Col,Board,Value):-
     NewCounter is Counter-1,
     threeInRow(NewCounter,Row,NewCol,Board,Value),!.
 
+% Check every direction
 checkAllAux(Row,Col,Board,Value):-
     Row > 0,
     Col > 0,
@@ -231,22 +238,13 @@ checkAllAux(Row,Col,Board,Value):-
     NextCol is Col-1,
     checkAllAux(Row,NextCol,Board,Value).
 
+% Check every direction and if there are 8 pieces on board
 checkAll(Board,Value):-
     flatten(Board, FlatBoard),
     eightOnBoard(FlatBoard, 1, Value, 8);
     checkAllAux(7,7,Board,Value).
 
-repulsions(Board, NewBoard, Row, Column):-
-	checkUpLeftPiece(Board, AuxBoard1, Row, Column),
-	checkUpPiece(AuxBoard1, AuxBoard2, Row, Column),
-	checkUpRightPiece(AuxBoard2, AuxBoard3, Row, Column),
-	checkRightPiece(AuxBoard3, AuxBoard4, Row, Column),
-	checkDownRightPiece(AuxBoard4, AuxBoard5, Row, Column),
-	checkDownPiece(AuxBoard5, AuxBoard6, Row, Column),
-	checkDownLeftPiece(AuxBoard6, AuxBoard7, Row, Column),
-	checkLeftPiece(AuxBoard7, NewBoard, Row, Column),
-	!.
-
+% Checks if the game is over and who's the winner (or if the game was reset by returning to main menu)
 game_over(GameState, Winner):-
     ( 
         checkAll(GameState,plyr1) -> Winner is 1; fail
