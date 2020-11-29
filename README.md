@@ -182,7 +182,11 @@ When running the game, the user is prompted to a **MainMenu**, where they can se
 - Player vs Computer
 - Computer vs Computer
 
+  ![Main Menu](Proj1/img/mainmenu.png)
+
 If the player decides to select a game mode which involves a Computer they are asked about the difficulty of the given Computer, which can either be Easy or Hard.
+
+  ![Main Menu 2](Proj1/img/mainmenu2.png)
 
 Furthermore, there is also a **Pause Menu**, which can be prompted whilst in game, by typing either 'pause', p or 'P', when asked for either a column or a row. The available options for the Pause Menu are:
 
@@ -192,7 +196,7 @@ Furthermore, there is also a **Pause Menu**, which can be prompted whilst in gam
 
 If the player decides to resume the game, it continues normally from when it was paused. On the other hand, if the player decides to return to the Main Menu, the game loop is interrupted and the player is prompted to the Main Menu. Finally, if the players chooses to exit the game the execution of the game is aborted.
 
-
+  ![Main Menu 2](Proj1/img/pausemenu.png)
 
 ## Valid moves list - [play.pl](https://github.com/Telmo465/PLOG/blob/master/src/play.pl) & [utils.pl](https://github.com/Telmo465/PLOG/blob/master/src/utils.pl)
 
