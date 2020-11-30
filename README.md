@@ -12,7 +12,7 @@
 In order to run our game follow the following steps:
 
 - Install and run SICStus Prolog.
-- Go to File > Working Directory and navigate to the *src* folder where you downloaded the code.
+- Go to File > Working Directory and navigate to the *Proj1* folder where you downloaded the code.
 - Go to File > Consult and select the file [*gekitai.pl*](/Proj1/gekitai.pl).
 - **Alternatively:** run `consult('path\to\gekitai.pl').`
 - Type `play.` into the SICStus console and the game will start.
