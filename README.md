@@ -160,9 +160,9 @@ In order to run our game follow the following steps:
 
 **Display - [tabuleiro.pl](Proj1/tabuleiro.pl)**
 
-To display the board we used the predicates display_game(X, Player), printMatrix([], 6) and printLine([]). display_game(X, Player) prints a row of the board, by calling printMatrix([], 6)  on every iteration - printMatrix([], 6) will then make use of predicate printLine([]), which recursively calls itself, printing the Head of the given list in every iteration.
+To display the board we used the predicates ``display_game(X, Player)``, ``printMatrix([], 6)`` and ``printLine([])``. ``display_game(X, Player)`` prints a row of the board, by calling printMatrix([], 6)  on every iteration - printMatrix([], 6) will then make use of predicate printLine([]), which recursively calls itself, printing the Head of the given list in every iteration.
 
-Furthermore, we use "X" and "O" to represent, respectively, Player 1 and Player 2. Empty values are represented by an empty space (" "). With the use of the predicate symbol(Value, S) we were able to display X, O and " " instead of values initially declared on the board's matrix (plyr1, plyr2, empty) which would result in a less user-friendly and easy-to-read game.
+Furthermore, we use "X" and "O" to represent, respectively, Player 1 and Player 2. Empty values are represented by an empty space (" "). With the use of the predicate ``symbol(Value, S)`` we were able to display X, O and " " instead of values initially declared on the board's matrix (plyr1, plyr2, empty) which would result in a less user-friendly and easy-to-read game.
 
 - Initial State:
 
@@ -202,16 +202,16 @@ If the player decides to resume the game, it continues normally from when it was
 
 ## Valid moves - [ai.pl](Proj1/ai.pl) & [input.pl](Proj1/input.pl)
 
-To obtain a list of all possible moves for a given Player, we implemented the predicate ``valid_moves(+GameState, +Player, -ListOfMoves)``. This gives (using the findall predicate from library lists) a list that includes all possible moves (Row and Column), as well as the board state after playing that move. This is done using the auxiliary predicate testMove.
-Regarding user input/move verification, we implemented the predicate readInput. This reads user input and verifies if it's valid, this is, if the position is part of the board and if that position is not already occupied by another piece.
+To obtain a list of all possible moves for a given Player, we implemented the predicate ``valid_moves(+GameState, +Player, -ListOfMoves)``. This gives (using the findall predicate from library lists) a list that includes all possible moves (Row and Column), as well as the board state after playing that move. This is done using the auxiliary predicate ``testMove``.
+Regarding user input/move verification, we implemented the predicate ``readInput``. This reads user input and verifies if it's valid, this is, if the position is part of the board and if that position is not already occupied by another piece.
 Additionally, regarding computer input/move generation, we implemented the predicate ``choose_move(+GameState, +Player, +Level, -Move)``. More can be read about this predicate in the section "Computer Move".
 
 
 
 ## Move execution - [game.pl](Proj1/game.pl) & [utils.pl](Proj1/utils.pl)
 
-The execution of every (human and machine) move is completed using the predicate ``move(+GameState, +Move, -NewGameState)``. This predicate receives a list (Move) with the format ``[Row, Col, Player]`` and applies the move to the gamestate accordingly (using replaceInMatrix and repulsions predicates).
-However, since the verification/generation is different depending wether it's a human or the machine playing, the predicate move is called in the predicate playMove, which also generates the move accordingly, using the predicates described in the section above (it also manipulates the value of ``Flag`` in order to deal with the 'Return to Main Menu' option in the Pause Menu).
+The execution of every (human and machine) move is completed using the predicate ``move(+GameState, +Move, -NewGameState)``. This predicate receives a list (Move) with the format ``[Row, Col, Player]`` and applies the move to the gamestate accordingly (using ``replaceInMatrix`` and ``repulsions`` predicates).
+However, since the verification/generation is different depending wether it's a human or the machine playing, the predicate move is called in the predicate ``playMove``, which also generates the move accordingly, using the predicates described in the section above (it also manipulates the value of ``Flag`` in order to deal with the 'Return to Main Menu' option in the Pause Menu).
 
 
 
@@ -235,7 +235,7 @@ Gekitai is a fairly recent game. This being said, the game is still "unresolved"
 - Each piece on board the the opponent of the given player adds to the evaluation -2 points;
 - Each 2 in a row for a given player adds to the evaluation +5 points;
 - Each 2 in a row for the opponent of the given player adds to the evaluation -20 points;
-The predicate that computes this evaluation is ``value(+GameState, +Player, -Value)``, using the auxiliary predicates ``piecesOnBoard``(similar to eightOnBoard) and ``directionalPoints``. Since this evaluation includes (most of the time) the evaluation of one move ahead, it takes some time for the process to be complete (worst case ~25 seconds).
+The predicate that computes this evaluation is ``value(+GameState, +Player, -Value)``, using the auxiliary predicates ``piecesOnBoard``(similar to ``eightOnBoard``) and ``directionalPoints``. Since this evaluation includes (most of the time) the evaluation of one move ahead, it takes some time for the process to be complete (worst case ~25 seconds).
 
 
 
