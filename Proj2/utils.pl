@@ -2,8 +2,13 @@ checkRowSum([],_).
 checkRowSum([H|T], Sum):-
     sum(H, #=, Sum),
     checkRowSum(T, Sum).
-
+ 
 checkInputPresence(Value, Number):-
+    /*constraintCountDigits(Value, Size),
+    Size #> 0,
+    NSize #= Size-1,
+    pow(10,NSize,Exp),
+    Value mod Exp #= Number.*/
     Value mod 10 #= Number.
 checkInputPresence(Value, Number):-
     Value #> 0,
@@ -47,6 +52,26 @@ countDigs(Number, Digits, AuxDigs):-
 countDigits(Number, Digits):-
     once(countDigs(Number, Digits, 0)).
 
+/*constraintCountDigs(0, Digits, Digits).
+constraintCountDigs(Number, Digits, AuxDigs):-
+    NNumber #= Number // 10,
+    NDigs #= AuxDigs+1,
+    constraintCountDigs(NNumber, Digits, NDigs).
+
+constraintCountDigits(Number, Digits):-
+    Number #>= 0,
+    constraintCountDigs(Number, Digits, 0).
+
+powAux(_, Num, 0, Num).
+powAux(Num, Num2, Exp, Result):-
+    NNum #= Num2 * Num,
+    NExp #= Exp-1,
+    powAux(Num, NNum, NExp, Result).
+
+pow(_,0,1).
+pow(Num, Exp, Result):-
+    powAux(Num, 1, Exp, Result),!.*/
+
 
 numToList(NUM,[LIST|[]]):-
     NUM < 10,
@@ -66,22 +91,18 @@ listToNum([H|T], Number, Num):-
     listToNum(T, NNumber, Num).
 
 
-remDigit(0, List, NewList):-      % 0 for first; 1 for last
+remDigit(0, List, NewList):-      % 0 to remove right; 1 to remove left
     nth0(0, List, Elem),
-    select(Elem, List, AuxList),!,
-    ( sumlist(AuxList, 0) -> 
-        remDigit(1, List, NewList);
-        NewList = AuxList 
-    ).
+    append([],[Elem],NewList).
 
 remDigit(1, List, NewList):-
     reverse(List, AuxList),
     nth0(0, AuxList, Elem),
-    select(Elem, AuxList, AAuxList),!,
-    reverse(AAuxList, NewList).
-    
+    (
+        Elem =:= 0 -> remDigit(0,List,NewList); append([],[Elem],NewList)
+    ).    
 
- removeDigit(Number, NewNumber):-
+ removeDigits(Number, NewNumber):-
     numToList(Number, List),
     length(List, Int),
     random(0,2,Random),
@@ -110,7 +131,7 @@ select_best_value(Set, BestValue):-
 
 unsolveRow([], Row, Row).
 unsolveRow([H|T], AuxRow, UnsolvedRow):-
-    removeDigit(H, Num),
+    removeDigits(H, Num),
     append(AuxRow, [Num], NAuxRow),
     unsolveRow(T, NAuxRow, UnsolvedRow).
 
