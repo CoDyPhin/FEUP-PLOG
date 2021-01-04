@@ -1,8 +1,12 @@
+% Predicate that applies the sum restriction for all rows
+
 checkRowSum([],_).
 checkRowSum([H|T], Sum):-
     sum(H, #=, Sum),
     checkRowSum(T, Sum).
  
+ % Predicate that applies the user digit presence restriction
+
 checkInputPresence(Value, Number):-
     /*constraintCountDigits(Value, Size),
     Size #> 0,
@@ -15,6 +19,8 @@ checkInputPresence(Value, Number):-
     Rest #= Value // 10,
     checkInputPresence(Rest, Number).
 
+% Auxiliary predicate to iterate the rows of the solution list and apply the input digit presence restriction
+
 iterateRow([], _, _).
 iterateRow([Val|T], PuzzleRow, Index):-
     nth1(Index, PuzzleRow, Number),
@@ -22,10 +28,14 @@ iterateRow([Val|T], PuzzleRow, Index):-
     NIndex is Index+1,
     iterateRow(T, PuzzleRow, NIndex).
 
+% Predicate that iterates the solution list to apply the input digit presence
+
 iterateSol([], _).
 iterateSol([Row|Tail], [PRow|PTail]):-
     iterateRow(Row, PRow, 1),
     iterateSol(Tail, PTail).
+
+% Auxiliary predicate that generates the solution matrix with the decision variables necessasry
 
 genList(SolutionList, SolutionList, 0, _, _).
 genList(AuxList, SolutionList, NCols, NRows, Sum):-
@@ -36,6 +46,7 @@ genList(AuxList, SolutionList, NCols, NRows, Sum):-
     NNCols >= 0,
     genList(NAuxList, SolutionList, NNCols, NRows, Sum).
     
+% Predicate that generates the solution matrix with the decision variables necessasry
 
 generateSolutionList(Puzzle, SolutionList, Sum):-
     length(Puzzle, NCols),
@@ -43,11 +54,15 @@ generateSolutionList(Puzzle, SolutionList, Sum):-
     length(Row, NRows),
     genList([], SolutionList, NCols, NRows, Sum).
 
+% Auxiliary predicate to count digits in a number
+
 countDigs(0, Digits, Digits).
 countDigs(Number, Digits, AuxDigs):-
     NNumber is Number // 10,
     NDigs is AuxDigs+1,
     countDigs(NNumber, Digits, NDigs).
+
+% Predicate to count digits in a number
 
 countDigits(Number, Digits):-
     once(countDigs(Number, Digits, 0)).
@@ -73,6 +88,8 @@ pow(Num, Exp, Result):-
     powAux(Num, 1, Exp, Result),!.*/
 
 
+% Predicate that converts a number to a list of digits
+
 numToList(NUM,[LIST|[]]):-
     NUM < 10,
     LIST is NUM,
@@ -83,6 +100,8 @@ numToList(NUM,[LIST|[]]):-
     END is (NUM mod 10), 
     append(LIST1,[END] ,LIST).
 
+% Predicate that converts a list of digits to a number
+
 listToNum([],Number,Number).
 listToNum([H|T], Number, Num):-
     length([H|T], Size),
@@ -90,8 +109,9 @@ listToNum([H|T], Number, Num):-
     NNumber is Number + H*(10^(Size-1)),
     listToNum(T, NNumber, Num).
 
+% Auxiliary predicates to remove digits from a number
 
-remDigit(0, List, NewList):-      % 0 to remove right; 1 to remove left
+remDigit(0, List, NewList):-      % 0 to remove right-most digits; 1 to remove left-most digits
     nth0(0, List, Elem),
     append([],[Elem],NewList).
 
@@ -101,6 +121,8 @@ remDigit(1, List, NewList):-
     (
         Elem =:= 0 -> remDigit(0,List,NewList); append([],[Elem],NewList)
     ).    
+
+% Predicate that randomly removes right-most or left-most digits
 
  removeDigits(Number, NewNumber):-
     numToList(Number, List),
@@ -113,7 +135,8 @@ remDigit(1, List, NewList):-
         )
     ).
     
-    
+% Random labeling values predicate (adapted from stackoverflow code)
+
 randomLabelingValues(Var, _Rest, BB, BB1) :-
     fd_set(Var, Set),
     select_best_value(Set, Value),
@@ -129,11 +152,15 @@ select_best_value(Set, BestValue):-
     random(0, Len, RandomIndex),
     nth0(RandomIndex, Lista, BestValue).
 
+% Predicate that unsolves a row by removing extra digits randomly
+
 unsolveRow([], Row, Row).
 unsolveRow([H|T], AuxRow, UnsolvedRow):-
     removeDigits(H, Num),
     append(AuxRow, [Num], NAuxRow),
     unsolveRow(T, NAuxRow, UnsolvedRow).
+
+% Predicate that unsolves a solved puzzle
 
 unsolvePuzzle([],R,R).
 unsolvePuzzle([Row|T],AuxResult, Result):-

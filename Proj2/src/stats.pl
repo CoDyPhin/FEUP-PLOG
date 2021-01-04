@@ -1,3 +1,5 @@
+% Statistics predicates
+
 reset_timer :- statistics(walltime,_).    
 print_time :-
     statistics(walltime,[_,T]),

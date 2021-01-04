@@ -5,6 +5,8 @@
 :- consult('utils.pl').
 :- consult('output.pl').
 
+% Predicate that generates a puzzle of Size rows and Size columns with sum Sum each, unifying Puzzle with the Puzzle input and SPuzzle with the solution
+
 generatePuzzle(Size, Sum, Puzzle, SPuzzle):-
     reset_timer,
     genList([], SPuzzle, Size, Size, Sum),
@@ -18,6 +20,8 @@ generatePuzzle(Size, Sum, Puzzle, SPuzzle):-
     fd_statistics,
     print_time.
 
+% Predicate that solves the puzzle Puzzle for sum Sum and unifies SolutionList with the solution
+
 solvePuzzle(Puzzle, Sum, SolutionList):-
     reset_timer,
     generateSolutionList(Puzzle, SolutionList, Sum),
@@ -30,12 +34,17 @@ solvePuzzle(Puzzle, Sum, SolutionList):-
     fd_statistics,
     print_time.
     
+% User predicate that receives the Size and the Sum and prints the generated puzzle and the corresponding solution
+
 generate(Size, Sum):-
     generatePuzzle(Size, Sum, Puzzle, Solution),
     write('Generated Puzzle: '),nl,
     printPuzzle(Puzzle, Sum),
     write('Solution: '), nl,!,
     once(printPuzzle(Solution, Sum)).
+
+
+% User predicate that receives the Puzzle and the Sum and prints the given puzzle and the corresponding solution
 
 solver(Puzzle, Sum):-
     write('Puzzle: '), nl,
